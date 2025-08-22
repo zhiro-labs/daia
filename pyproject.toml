@@ -1,7 +1,7 @@
 [project]
-name = "daia-build"
+name = "daia"
 version = "0.1.0"
-description = "Add your description here"
+description = "Discord AI Agent"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
