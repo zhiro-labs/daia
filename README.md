@@ -126,3 +126,7 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 - [ ] Database support
 - [ ] Long-term memory
 - [ ] Dive deeper cookbook/pocketflow-thinking on [PocketFlow](https://github.com/The-Pocket/PocketFlow)
+
+## Acknowledgments
+
+The background of the cover image was shot by [Çağrı KANMAZ](https://www.pexels.com/video/33098418/).
