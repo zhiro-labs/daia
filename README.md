@@ -2,6 +2,11 @@
   <img src="assets/readme/cover.png" alt="Daia: Discord AI Agent" width="800">
 </p>
 
+<p align="center">
+    <img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python 3.12+">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
+</p>
+
 Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
 
 ## Features
@@ -17,7 +22,6 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
 
 ### Prerequisites
 
-- Python 3.12+
 - A Discord Bot Token
 - A Google Gemini API Key
 
@@ -26,8 +30,8 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/daia-build.git
-    cd daia-build
+    git clone https://github.com/zhiro-labs/daia.git
+    cd daia
     ```
 
 2.  **Install dependencies:**
@@ -36,31 +40,19 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
     uv sync
     ```
 
-    Alternatively, you can use pip:
+3.  **Configure your environment and system prompt:**
 
-    ```bash
-    pip install -e .
-    ```
-
-3.  **Configure your environment:**
-
-    - Copy the `.env.example` file to `.env`:
+    - Copy the example files to create your own configuration:
       ```bash
       cp .env.example .env
-      ```
-    - Edit the `.env` file to add your Discord bot token and Gemini API key.
-
-4.  **Customize the system prompt:**
-
-    - Copy the `config/chat_sys_prompt.txt.example` file to `config/chat_sys_prompt.txt`:
-      ```bash
       cp config/chat_sys_prompt.txt.example config/chat_sys_prompt.txt
       ```
+    - Edit the `.env` file to add your Discord bot token and Gemini API key.
     - Edit `config/chat_sys_prompt.txt` to customize the bot's personality and instructions.
 
-5.  **Run the bot:**
+4.  **Run the bot:**
     ```bash
-    python main.py
+    uv run main.py
     ```
 
 ## Configuration
@@ -133,8 +125,4 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 - [ ] OpenAI compatible support
 - [ ] Database support
 - [ ] Long-term memory
-
-### Code Quality & Refactoring
-
-- [ ] Code splitting
 - [ ] Dive deeper cookbook/pocketflow-thinking on [PocketFlow](https://github.com/The-Pocket/PocketFlow)
