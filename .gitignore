@@ -1,0 +1,29 @@
+# Editor/IDE specific files
+.vscode/
+
+# Environment variables - DO NOT COMMIT
+.env
+
+# macOS specific files
+.DS_Store
+
+# Ignore downloaded assets
+assets/fonts/*
+
+# Python cache files
+__pycache__/
+
+# Local configuration overrides
+config/chat_sys_prompt.txt
+
+# Virtual Environment
+.venv/
+
+# IDE/Tooling
+.ropeproject/
+
+# Temporary files
+temp/
+
+# Ignore pocketflow documentation folder
+pocketflow_docs/
