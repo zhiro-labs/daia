@@ -43,6 +43,7 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
     ```bash
     uv sync
     ```
+    
     > [!NOTE] 
     > If you don't have `uv` installed, you can follow the official installation guide: [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
 
