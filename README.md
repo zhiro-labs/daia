@@ -174,4 +174,5 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 ## Acknowledgments
 
-The background of the cover image was shot by [Çağrı KANMAZ](https://www.pexels.com/video/33098418/).
+- Inspired by [PocketFlow](https://github.com/The-Pocket/PocketFlow) by [Zachary Huang](https://github.com/zachary62)
+- The cover background photo was shot by [Çağrı KANMAZ](https://www.pexels.com/@cagrikanmaz) on [Pexels](https://www.pexels.com/video/33098418/)
