@@ -26,8 +26,8 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
 
 ### Prerequisites
 
-- A Discord Bot Token
-- A Google Gemini API Key
+- A Discord Bot Token. You can follow the official guide to create one: [Discord Developer Documentation](https://discord.com/developers/docs/quick-start/getting-started#step-1-creating-an-app).
+- A Google Gemini API Key. You can obtain one from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ### Environment
 
