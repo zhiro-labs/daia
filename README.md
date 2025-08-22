@@ -18,6 +18,7 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
   <p align="center">
     <img src="assets/readme/table_rendering_showcase.png" alt="Table Rendering Showcase" width="600">
   </p>
+- **Smart Chunking**: Automatically splits long messages into smaller chunks, preserving markdown formatting to avoid Discord's character limit.
 - **Google Search Integration**: Built-in search capabilities through Gemini tools.
 - **Slash Commands**: Includes a `/newchat` command for starting fresh conversation sessions.
 
