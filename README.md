@@ -92,22 +92,34 @@ When inviting the bot to your server, ensure it has the following permissions:
 
 Daia is configured using environment variables. These can be set in a `.env` file in the project root.
 
-- `DISCORD_BOT_TOKEN`: Your Discord bot token.
-- `GEMINI_API_KEY`: Your Google Gemini API key.
-- `ALLOWED_CHANNELS`: A comma-separated list of channel IDs where the bot is allowed to respond.
-- `HISTORY_LIMIT`: The maximum number of messages to fetch from the channel history.
-- `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash").
-- `CHAT_TEMPERATURE`: Controls the randomness of Gemini's responses (range: 0.0–2.0, default: 1.0).
-- `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file.
-- `ENABLE_CONTEXTUAL_SYSTEM_PROMPT`: Set to `on` to enable the contextual system prompt, which allows the bot to recognize and address users by their display name. Defaults to `on`.
-- `LLM_PROVIDER`: The LLM provider to use. Currently supports `gemini`.
+- `DISCORD_BOT_TOKEN`: Your Discord bot token. **(Required)**
+- `GEMINI_API_KEY`: Your Google Gemini API key. **(Required)**
+- `ALLOWED_CHANNELS`: A comma-separated list of channel IDs where the bot is allowed to respond without being mentioned. If this is not set, the bot will only respond to direct messages and mentions.
+- `HISTORY_LIMIT`: The maximum number of messages to fetch from the channel history. **(Required)**
+- `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro"). **(Required)**
+- `CHAT_TEMPERATURE`: Controls the randomness of Gemini's responses (range: 0.0–2.0). **(Required)**
+- `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file. **(Required)**
+- `ENABLE_CONTEXTUAL_SYSTEM_PROMPT`: Set to `on` to enable the contextual system prompt, which allows the bot to recognize and address users by their display name. The recommended setting is `on` (as set in `.env.example`). If the variable is not set, it defaults to `off`.
+- `LLM_PROVIDER`: The LLM provider to use. Currently supports `gemini`. Defaults to `gemini`.
 
 ## Usage
 
-- **Mention the bot:** Mention the bot in a channel or send it a direct message to start a conversation.
-- **Start a new chat:** Use the `/newchat` slash command to start a fresh conversation session.
-- **Markdown Tables:** The bot will automatically render any markdown tables in its responses as images.
-- **Google Search:** The bot can use Google Search to answer questions about recent events or to find information on the web.
+Daia is designed for easy interaction. Here's how you can use its features:
+
+- **Start a Conversation**: To begin interacting with Daia, you have several options:
+  - **In allowed channels**: If `ALLOWED_CHANNELS` is configured with specific channel IDs, you can directly send messages in those channels without mentioning the bot.
+  - **Mention the bot**: In any channel where the bot has access, mention it (e.g., `@Daia hello!`) to start a conversation.
+  - **Direct Message**: Send the bot a Direct Message (DM) to chat privately.
+
+- **Continue the Conversation**: Daia remembers the recent conversation history. You can simply send a new message to continue the conversation without needing to mention the bot again.
+
+- **Start a New Chat Session**: To start a fresh conversation and clear the context, use the `/newchat` slash command. This will make the bot forget the previous conversation history in that channel.
+
+- **Automatic Table Rendering**: When Daia's response contains a markdown table, it will automatically be rendered as an image for better readability. This feature works automatically without any specific commands.
+
+- **Google Search**: If you ask a question that requires up-to-date information, Daia will automatically use its Google Search tool to find the answer.
+
+- **Long Message Handling**: Daia automatically splits long messages into multiple smaller ones, preserving the original formatting. This is an automatic feature to work around Discord's character limit.
 
 ## Project Structure
 
