@@ -66,6 +66,28 @@ This project requires Python 3.12+. `uv` will gracefully handle the Python versi
     uv run main.py
     ```
 
+## Discord Application Permissions and Intents
+
+For the bot to function correctly, you need to configure its permissions and intents in the [Discord Developer Portal](https://discord.com/developers/).
+
+### Privileged Gateway Intents
+
+Navigate to your bot's settings in the Discord Developer Portal and enable the following privileged gateway intents:
+
+- **Server Members Intent**: Required for the bot to recognize and address users by their display name.
+- **Message Content Intent**: Required for the bot to read message content.
+
+### Bot Permissions
+
+When inviting the bot to your server, ensure it has the following permissions:
+
+- **General Permissions**
+  - View Channels
+- **Text Permissions**
+  - Send Messages
+  - Attach Files
+  - Read Message History
+
 ## Configuration
 
 Daia is configured using environment variables. These can be set in a `.env` file in the project root.
