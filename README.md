@@ -15,6 +15,9 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
 - **User Recognition**: Recognizes and addresses users by their display name for a personalized experience.
 - **Smart Message Processing**: Processes Discord message history with context awareness.
 - **Markdown Table Rendering**: Automatically converts markdown tables to images using Noto Sans CJK fonts. Supported languages include but are not limited to English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Japanese (日本語), and Korean (한국어).
+  <p align="center">
+    <img src="assets/readme/table_rendering_showcase.png" alt="Table Rendering Showcase" width="600">
+  </p>
 - **Google Search Integration**: Built-in search capabilities through Gemini tools.
 - **Slash Commands**: Includes a `/newchat` command for starting fresh conversation sessions.
 
