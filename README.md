@@ -29,6 +29,10 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
 - A Discord Bot Token
 - A Google Gemini API Key
 
+### Environment
+
+This project requires Python 3.12+. `uv` will gracefully handle the Python version requirement, create a virtual environment, and manage all project dependencies for you.
+
 ### Installation
 
 1.  **Clone the repository:**
@@ -44,7 +48,7 @@ Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini a
     uv sync
     ```
 
-    > ℹ️ **Note**
+    > ℹ️ **Note:**
     > If you don't have `uv` installed, you can follow the official installation guide: [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
 
 3.  **Configure your environment and system prompt:**
