@@ -7,33 +7,45 @@ from datetime import datetime, timezone
 
 
 class ContextualSystemPrompt(AsyncNode):
-    def __init__(self, enable_contextual_system_prompt, genai_chat_system_prompt, history_limit):
+    def __init__(
+        self, enable_contextual_system_prompt, genai_chat_system_prompt, history_limit
+    ):
         super().__init__()
         self.enable_contextual_system_prompt = enable_contextual_system_prompt
         self.genai_chat_system_prompt = genai_chat_system_prompt
         self.history_limit = history_limit
-    
+
     async def prep_async(self, shared):
-        print(f"📝 [ContextualSystemPrompt] Preparing contextual system prompt")
+        print("📝 [ContextualSystemPrompt] Preparing contextual system prompt")
         return {
             "participants": shared.get("unique_users", set()),
             "author_name": shared.get("author_name", "User"),
-            "current_time": shared.get("created_at", datetime.now(timezone.utc).isoformat())
+            "current_time": shared.get(
+                "created_at", datetime.now(timezone.utc).isoformat()
+            ),
         }
-    
+
     async def exec_async(self, prep_res):
-        print(f"🔧 [ContextualSystemPrompt] Processing system prompt with contextual information")
+        print(
+            "🔧 [ContextualSystemPrompt] Processing system prompt with contextual information"
+        )
         print(self.enable_contextual_system_prompt)
         # Check if contextual system prompt is enabled
         if not self.enable_contextual_system_prompt:
-            print(f"⏭️ [ContextualSystemPrompt] Contextual system prompt disabled, returning base prompt")
+            print(
+                "⏭️ [ContextualSystemPrompt] Contextual system prompt disabled, returning base prompt"
+            )
             return self.genai_chat_system_prompt
-        
+
         prep_res["participants"].add(prep_res["author_name"])
-        
+
         # Build contextual information
-        participants_str = ", ".join(prep_res["participants"]) if prep_res["participants"] else "Unknown"
-        
+        participants_str = (
+            ", ".join(prep_res["participants"])
+            if prep_res["participants"]
+            else "Unknown"
+        )
+
         contextual_system_prompt = f"""
 Priority Contextual System Guidance:
 
@@ -46,15 +58,19 @@ Key information to use:
 - The conversation may involve one or more users. Current participants: {participants_str}.
 - Current time: {prep_res["current_time"]}.
 """
-        
+
         # Add contextual system prompt with clear labeling
         contextual_section = f"{contextual_system_prompt}"
         enhanced_prompt = f"{self.genai_chat_system_prompt}\n\n{contextual_section}"
         print(enhanced_prompt)
-        print(f"✅ [ContextualSystemPrompt] Enhanced system prompt with contextual information")
+        print(
+            "✅ [ContextualSystemPrompt] Enhanced system prompt with contextual information"
+        )
         return enhanced_prompt
-    
+
     async def post_async(self, shared, prep_res, exec_res):
         shared["enhanced_system_prompt"] = exec_res
-        print(f"📝 [ContextualSystemPrompt] Enhanced system prompt stored, length: {len(exec_res)} characters")
+        print(
+            f"📝 [ContextualSystemPrompt] Enhanced system prompt stored, length: {len(exec_res)} characters"
+        )
         return "success"

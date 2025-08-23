@@ -12,10 +12,10 @@ from .send_response import SendDiscordResponse
 
 __all__ = [
     "FetchDiscordHistory",
-    "ProcessMessageHistory", 
+    "ProcessMessageHistory",
     "LLMChat",
     "ContextualSystemPrompt",
     "MarkdownTableExtractor",
     "TableImageRenderer",
-    "SendDiscordResponse"
+    "SendDiscordResponse",
 ]
