@@ -5,7 +5,7 @@
 <p align="center">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
     <img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python 3.12+">
-    <img src="https://github.com/zhiro-labs/daia/actions/workflows/ci.yml/badge.svg" alt="CI">
+    <img src="https://github.com/zhiro-labs/daia/actions/workflows/ci.yml/badge.svg" alt="Build Status">
     <img src="https://github.com/zhiro-labs/daia/actions/workflows/quick-check.yml/badge.svg" alt="Quick Check">
     <img src="https://img.shields.io/badge/coverage-check%20locally-blue" alt="Coverage">
 </p>
