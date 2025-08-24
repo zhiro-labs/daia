@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/cover.jpg" alt="Daia: Discord AI Agent" width="800">
+  <img src="assets/readme/cover.png" alt="Daia: Discord AI Agent" width="800">
 </p>
 
 <p align="center">
