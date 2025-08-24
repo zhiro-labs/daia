@@ -160,6 +160,7 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 - [ ] Reply message rearrange
 - [ ] Timezone setting
+- [ ] daia-ignore tag
 - [ ] Image processing
 - [ ] YouTube processing
 - [ ] Deep search
