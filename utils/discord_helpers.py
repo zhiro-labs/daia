@@ -3,7 +3,7 @@ Discord-specific utility functions for message processing.
 """
 
 import re
-from typing import List, Optional, Tuple, NamedTuple
+from typing import NamedTuple
 
 
 class SyntaxBoundary(NamedTuple):
@@ -59,7 +59,7 @@ class DiscordTextSplitter:
         if max_chars <= 0:
             raise ValueError("max_chars must be positive")
 
-    def split(self, text: str) -> List[str]:
+    def split(self, text: str) -> list[str]:
         """
         Split text into chunks while preserving Discord formatting.
 
@@ -80,7 +80,7 @@ class DiscordTextSplitter:
 
         return self._smart_split(text)
 
-    def _simple_split(self, text: str) -> List[str]:
+    def _simple_split(self, text: str) -> list[str]:
         """Simple splitting without format preservation."""
         chunks = []
         for i in range(0, len(text), self.max_chars):
@@ -89,7 +89,7 @@ class DiscordTextSplitter:
                 chunks.append(chunk.strip())
         return chunks
 
-    def _smart_split(self, text: str) -> List[str]:
+    def _smart_split(self, text: str) -> list[str]:
         """Smart splitting with Discord format preservation."""
         chunks = []
         remaining = text
@@ -113,7 +113,7 @@ class DiscordTextSplitter:
 
         return chunks
 
-    def _find_safe_split_point(self, text: str, target_pos: int) -> Optional[int]:
+    def _find_safe_split_point(self, text: str, target_pos: int) -> int | None:
         """Find a safe split point considering paired syntaxes and line-start formats."""
         if target_pos >= len(text):
             return len(text)
@@ -151,7 +151,7 @@ class DiscordTextSplitter:
             text, target_pos, paired_boundaries, line_start_formats
         )
 
-    def _find_all_paired_syntaxes(self, text: str) -> List[SyntaxBoundary]:
+    def _find_all_paired_syntaxes(self, text: str) -> list[SyntaxBoundary]:
         """Find all paired syntax boundaries, handling nested cases."""
         all_boundaries = []
 
@@ -183,7 +183,7 @@ class DiscordTextSplitter:
 
     def _find_paired_syntax(
         self, text: str, opening: str, closing: str, name: str
-    ) -> List[SyntaxBoundary]:
+    ) -> list[SyntaxBoundary]:
         """Find all instances of a specific paired syntax."""
         boundaries = []
         pos = 0
@@ -207,7 +207,7 @@ class DiscordTextSplitter:
 
         return boundaries
 
-    def _find_line_start_formats(self, text: str) -> List[Tuple[int, str]]:
+    def _find_line_start_formats(self, text: str) -> list[tuple[int, str]]:
         """Find all line-start format positions."""
         line_formats = []
         lines = text.split("\n")
@@ -226,8 +226,8 @@ class DiscordTextSplitter:
         self,
         text: str,
         max_pos: int,
-        paired_boundaries: List[SyntaxBoundary],
-        line_start_formats: List[Tuple[int, str]],
+        paired_boundaries: list[SyntaxBoundary],
+        line_start_formats: list[tuple[int, str]],
     ) -> int:
         """Find the best split point before max_pos."""
         if max_pos <= 0:
@@ -244,7 +244,7 @@ class DiscordTextSplitter:
 
         # Try line boundaries
         current_pos = 0
-        for line_start, line_end in self._find_line_boundaries(text):
+        for _line_start, line_end in self._find_line_boundaries(text):
             if line_end <= max_pos:
                 if self._is_position_safe(
                     line_end, paired_boundaries, line_start_formats, text
@@ -267,7 +267,7 @@ class DiscordTextSplitter:
 
         return max_pos
 
-    def _find_line_boundaries(self, text: str) -> List[Tuple[int, int]]:
+    def _find_line_boundaries(self, text: str) -> list[tuple[int, int]]:
         """Find line boundaries in the text."""
         lines = []
         start = 0
@@ -287,8 +287,8 @@ class DiscordTextSplitter:
     def _is_position_safe(
         self,
         pos: int,
-        paired_boundaries: List[SyntaxBoundary],
-        line_start_formats: List[Tuple[int, str]],
+        paired_boundaries: list[SyntaxBoundary],
+        line_start_formats: list[tuple[int, str]],
         text: str,
     ) -> bool:
         """Check if a position is safe to split at."""
@@ -303,7 +303,7 @@ class DiscordTextSplitter:
             while next_line_start < len(text) and text[next_line_start] in " \t":
                 next_line_start += 1
 
-            for format_pos, format_name in line_start_formats:
+            for format_pos, _format_name in line_start_formats:
                 if format_pos >= pos and format_pos <= next_line_start + 10:
                     if pos > format_pos:
                         return False
@@ -316,7 +316,7 @@ def split_discord_text(
     max_chars: int = 2000,
     preserve_formatting: bool = True,
     verbose: bool = False,
-) -> List[str]:
+) -> list[str]:
     """
     Split Discord text into chunks while preserving formatting.
 
@@ -342,7 +342,7 @@ def split_discord_text(
 
 def split_message(
     text: str, max_length: int = 2000, preserve_syntax: bool = True
-) -> List[str]:
+) -> list[str]:
     """
     Split a message into chunks that fit Discord's character limit.
 
@@ -365,7 +365,7 @@ def split_message(
     return _split_message_legacy(text, max_length)
 
 
-def _split_message_legacy(text: str, max_length: int = 2000) -> List[str]:
+def _split_message_legacy(text: str, max_length: int = 2000) -> list[str]:
     """
     Legacy message splitting implementation without syntax awareness.
 

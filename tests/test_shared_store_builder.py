@@ -1,6 +1,9 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 from utils.shared_store_builder import create_message_data, validate_message_data_types
+
 
 @pytest.fixture
 def mock_message():
@@ -20,6 +23,7 @@ def mock_message():
     message.type = "default"
     return message
 
+
 def test_create_message_data(mock_message):
     """Test the create_message_data function."""
     bot_user_id = 42
@@ -31,6 +35,7 @@ def test_create_message_data(mock_message):
     assert message_data["message_id"] == 789
     assert message_data["content"] == "Hello, world!"
     assert message_data["bot_user_id"] == 42
+
 
 def test_validate_message_data_types_valid():
     """Test validate_message_data_types with valid data."""
@@ -45,9 +50,10 @@ def test_validate_message_data_types_valid():
         "guild_name": "guild",
         "timestamp": "2025-08-23T12:00:00",
         "embeds": [],
-        "attachments": []
+        "attachments": [],
     }
     assert validate_message_data_types(valid_data) is True
+
 
 def test_validate_message_data_types_invalid():
     """Test validate_message_data_types with invalid data."""
@@ -62,6 +68,6 @@ def test_validate_message_data_types_invalid():
         "guild_name": "guild",
         "timestamp": "2025-08-23T12:00:00",
         "embeds": [],
-        "attachments": []
+        "attachments": [],
     }
     assert validate_message_data_types(invalid_data) is False

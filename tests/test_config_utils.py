@@ -1,5 +1,6 @@
 from utils.config_utils import env_onoff_to_bool
 
+
 def test_env_onoff_to_bool():
     assert env_onoff_to_bool("on") is True
     assert env_onoff_to_bool("ON") is True

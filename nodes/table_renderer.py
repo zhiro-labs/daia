@@ -2,11 +2,12 @@
 Table image rendering node for the async flow pipeline.
 """
 
-import re
 import io
-from typing import Dict, Any, List
-from pocketflow import AsyncNode
+import re
+from typing import Any
+
 from PIL import Image, ImageDraw, ImageFont
+from pocketflow import AsyncNode
 
 
 class TableImageRenderer(AsyncNode):
@@ -178,7 +179,7 @@ class TableImageRenderer(AsyncNode):
 
     def _wrap_text_with_formatting(
         self, text: str, max_width: int, fonts
-    ) -> List[List[tuple]]:
+    ) -> list[list[tuple]]:
         """Wrap text with formatting based on pixel width."""
         if not text:
             return [[("regular", "")]]
@@ -239,7 +240,7 @@ class TableImageRenderer(AsyncNode):
 
         return lines or [[("regular", "")]]
 
-    def _wrap_text(self, text: str, max_width: int, font) -> List[str]:
+    def _wrap_text(self, text: str, max_width: int, font) -> list[str]:
         """Wrap text based on pixel width instead of char count (legacy method)."""
         if not text:
             return [""]
@@ -292,7 +293,7 @@ class TableImageRenderer(AsyncNode):
     ):
         """Draw the table header row with bold formatting support."""
         x = 0
-        for i, (header, width) in enumerate(zip(headers, col_widths)):
+        for _i, (header, width) in enumerate(zip(headers, col_widths, strict=False)):
             draw.rectangle(
                 [x, 0, x + width, header_height],
                 fill=colors["header_bg"],
@@ -357,7 +358,9 @@ class TableImageRenderer(AsyncNode):
         for row_idx, (processed_row, row_height) in enumerate(processed_data):
             x = 0
             row_bg = colors["row_bg_alt"] if row_idx % 2 else colors["row_bg"]
-            for i, (wrapped_lines, width) in enumerate(zip(processed_row, col_widths)):
+            for _i, (wrapped_lines, width) in enumerate(
+                zip(processed_row, col_widths, strict=False)
+            ):
                 draw.rectangle(
                     [x, y, x + width, y + row_height],
                     fill=row_bg,
@@ -396,7 +399,7 @@ class TableImageRenderer(AsyncNode):
             y += row_height + 1
         return y
 
-    def _render_table_image(self, table_data: Dict[str, Any]) -> io.BytesIO:
+    def _render_table_image(self, table_data: dict[str, Any]) -> io.BytesIO:
         headers, rows = table_data["headers"], table_data["rows"]
 
         print("🎨 [TableImageRenderer] Starting table image rendering")

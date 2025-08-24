@@ -2,9 +2,11 @@
 Discord response sending node for the async flow pipeline.
 """
 
-import discord
 import os
+
+import discord
 from pocketflow import AsyncNode
+
 from utils.discord_helpers import split_message
 
 

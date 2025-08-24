@@ -1,6 +1,7 @@
-import requests
 import zipfile
 from pathlib import Path
+
+import requests
 
 
 def check_font_exists():

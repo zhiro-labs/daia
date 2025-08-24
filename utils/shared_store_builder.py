@@ -2,12 +2,13 @@
 Shared store builder for creating and validating message data structures.
 """
 
-import discord
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
+
+import discord
 
 
-def create_message_data(message: discord.Message, bot_user_id: int) -> Dict[str, Any]:
+def create_message_data(message: discord.Message, bot_user_id: int) -> dict[str, Any]:
     """Create message data with proper type validation"""
     try:
         # Ensure all IDs are integers
@@ -89,7 +90,7 @@ def create_message_data(message: discord.Message, bot_user_id: int) -> Dict[str,
         raise
 
 
-def validate_message_data_types(data: Dict[str, Any]) -> bool:
+def validate_message_data_types(data: dict[str, Any]) -> bool:
     """Validate the types of key fields in message_data"""
     try:
         # Check integer type fields

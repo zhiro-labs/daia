@@ -2,8 +2,9 @@
 Contextual system prompt node for the async flow pipeline.
 """
 
+from datetime import UTC, datetime
+
 from pocketflow import AsyncNode
-from datetime import datetime, timezone
 
 
 class ContextualSystemPrompt(AsyncNode):
@@ -20,9 +21,7 @@ class ContextualSystemPrompt(AsyncNode):
         return {
             "participants": shared.get("unique_users", set()),
             "author_name": shared.get("author_name", "User"),
-            "current_time": shared.get(
-                "created_at", datetime.now(timezone.utc).isoformat()
-            ),
+            "current_time": shared.get("created_at", datetime.now(UTC).isoformat()),
         }
 
     async def exec_async(self, prep_res):

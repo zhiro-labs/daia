@@ -2,9 +2,10 @@
 Markdown table extraction node for the async flow pipeline.
 """
 
-import re
 import os
-from typing import Dict, Any
+import re
+from typing import Any
+
 from pocketflow import AsyncNode
 
 
@@ -88,7 +89,7 @@ class MarkdownTableExtractor(AsyncNode):
                 "table_count": 0,
             }
 
-    def _parse_table(self, table_text: str) -> Dict[str, Any]:
+    def _parse_table(self, table_text: str) -> dict[str, Any]:
         """Parse a markdown table into structured data"""
         lines = [line.strip() for line in table_text.split("\n") if line.strip()]
 

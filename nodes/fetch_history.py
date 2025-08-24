@@ -2,8 +2,8 @@
 Discord history fetching node for the async flow pipeline.
 """
 
-import discord
 import aiohttp
+import discord
 from pocketflow import AsyncNode
 
 

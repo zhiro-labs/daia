@@ -1,24 +1,26 @@
-from pocketflow import AsyncFlow
-from google import genai
-from google.genai import types
+import os
+
 import discord
 from discord.ext import commands
-import os
 from dotenv import load_dotenv
-from utils import (
-    env_onoff_to_bool,
-    check_font_exists,
-    download_noto_font,
-    create_message_data,
-    validate_message_data_types,
-)
-from nodes.fetch_history import FetchDiscordHistory
-from nodes.process_history import ProcessMessageHistory
-from nodes.llm_chat import LLMChat
+from google import genai
+from google.genai import types
+from pocketflow import AsyncFlow
+
 from nodes.contextual_system_prompt import ContextualSystemPrompt
+from nodes.fetch_history import FetchDiscordHistory
+from nodes.llm_chat import LLMChat
+from nodes.process_history import ProcessMessageHistory
+from nodes.send_response import SendDiscordResponse
 from nodes.table_extractor import MarkdownTableExtractor
 from nodes.table_renderer import TableImageRenderer
-from nodes.send_response import SendDiscordResponse
+from utils import (
+    check_font_exists,
+    create_message_data,
+    download_noto_font,
+    env_onoff_to_bool,
+    validate_message_data_types,
+)
 
 # Load environment variables at module level
 load_dotenv()
@@ -43,7 +45,7 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")  # Default to gemini
 
 
 genai_client = genai.Client(api_key=GEMINI_API_KEY)
-with open(CHAT_SYS_PROMPT_PATH, "r", encoding="utf-8") as file:
+with open(CHAT_SYS_PROMPT_PATH, encoding="utf-8") as file:
     genai_chat_system_prompt = file.read()
 genai_tools = types.Tool(google_search=types.GoogleSearch())
 

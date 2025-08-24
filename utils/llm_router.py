@@ -2,9 +2,8 @@
 LLM Router utility for supporting multiple AI providers.
 """
 
-from google.genai import types
 import openai
-from typing import List
+from google.genai import types
 
 
 async def _call_openai(prompt: str, **kwargs) -> str:
@@ -125,6 +124,6 @@ async def call_llm(prompt: str, provider: str = "openai", **kwargs) -> str:
     return await func(prompt, **kwargs)
 
 
-def get_supported_providers() -> List[str]:
+def get_supported_providers() -> list[str]:
     """Get list of supported providers"""
     return list(PROVIDERS.keys())
