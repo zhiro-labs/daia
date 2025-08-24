@@ -5,7 +5,7 @@ repos:
       - id: export-requirements
         name: Export requirements from uv
         entry: uv
-        args: [export, --format, requirements-txt, --without-hashes, --without-urls, --without-annotations, --output-file, requirements.txt]
+        args: [export, --format, requirements-txt, --no-hashes, --no-annotate, --output-file, requirements.txt]
         language: system
         files: ^(pyproject\.toml|uv\.lock)$
         pass_filenames: false
@@ -17,7 +17,7 @@ repos:
       - id: requirements-txt-fixer
         name: Fix requirements.txt
         files: ^requirements\.txt$
-      
+
       # Optional: Other common hooks
       - id: trailing-whitespace
       - id: end-of-file-fixer
