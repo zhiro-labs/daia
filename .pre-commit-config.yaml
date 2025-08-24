@@ -1,0 +1,26 @@
+repos:
+  # Custom hook: Export requirements.txt from uv
+  - repo: local
+    hooks:
+      - id: export-requirements
+        name: Export requirements from uv
+        entry: uv
+        args: [export, --format, requirements-txt, --without-hashes, --without-urls, --without-annotations, --output-file, requirements.txt]
+        language: system
+        files: ^(pyproject\.toml|uv\.lock)$
+        pass_filenames: false
+
+  # Official pre-commit hooks: Format and fix requirements.txt
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0  # Use latest stable version
+    hooks:
+      - id: requirements-txt-fixer
+        name: Fix requirements.txt
+        files: ^requirements\.txt$
+      
+      # Optional: Other common hooks
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
