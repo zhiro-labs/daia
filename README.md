@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
     <img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python 3.12+">
     <a href="https://github.com/zhiro-labs/daia/actions/workflows/ci.yml"><img src="https://github.com/zhiro-labs/daia/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a>
     <a href="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml"><img src="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml/badge.svg" alt="Cross-Platform Tests"></a>
