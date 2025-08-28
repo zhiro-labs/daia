@@ -97,9 +97,10 @@ When inviting the bot to your server, ensure it has the following permissions:
 Daia is configured using environment variables. These can be set in a `.env` file in the project root.
 
 - `DISCORD_BOT_TOKEN`: Your Discord bot token. **(Required)**
-- `GEMINI_API_KEY`: Your Google Gemini API key. **(Required)**
+- `DISCORD_BOT_ACTIVITY`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music"). Optional.
 - `ALLOWED_CHANNELS`: A comma-separated list of channel IDs where the bot is allowed to respond without being mentioned. If this is not set, the bot will only respond to direct messages and mentions.
 - `HISTORY_LIMIT`: The maximum number of messages to fetch from the channel history. **(Required)**
+- `GEMINI_API_KEY`: Your Google Gemini API key. **(Required)**
 - `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro"). **(Required)**
 - `CHAT_TEMPERATURE`: Controls the randomness of Gemini's responses (range: 0.0–2.0). **(Required)**
 - `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file. **(Required)**
