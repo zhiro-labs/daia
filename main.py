@@ -26,6 +26,7 @@ from utils import (
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+DISCORD_BOT_ACTIVITY=os.getenv("DISCORD_BOT_ACTIVITY")
 # Parse comma-separated channel IDs from environment variable into a set of integers
 ALLOWED_CHANNELS = {
     int(stripped)
@@ -58,7 +59,7 @@ intents.members = (
 intents.guilds = True  # Default is True, but explicitly written for clarity
 
 custom_activity = discord.CustomActivity(
-    name="Surfing"
+    name=DISCORD_BOT_ACTIVITY
 )  # Or any status message you want to display
 
 bot = commands.Bot(
