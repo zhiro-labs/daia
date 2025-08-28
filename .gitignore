@@ -27,5 +27,3 @@ temp/
 
 # Ignore pocketflow documentation folder
 pocketflow_docs/
-
-.coverage
