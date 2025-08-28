@@ -26,7 +26,7 @@ from utils import (
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-DISCORD_BOT_ACTIVITY=os.getenv("DISCORD_BOT_ACTIVITY")
+DISCORD_BOT_ACTIVITY = os.getenv("DISCORD_BOT_ACTIVITY")
 # Parse comma-separated channel IDs from environment variable into a set of integers
 ALLOWED_CHANNELS = {
     int(stripped)
