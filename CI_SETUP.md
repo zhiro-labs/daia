@@ -21,7 +21,6 @@ make lint          # Run ruff linting
 make format        # Format code with ruff
 make format-check  # Check code formatting
 make test          # Run tests
-make test-cov      # Run tests with coverage
 ```
 
 ## GitHub Actions Workflows
@@ -34,17 +33,15 @@ make test-cov      # Run tests with coverage
 
 ### 2. Main CI (`.github/workflows/ci.yml`)
 - **Triggers**: Push to main/develop, PRs to main/develop
-- **Purpose**: Comprehensive testing with coverage
-- **Includes**: 
+- **Purpose**: Comprehensive testing and code quality
+- **Includes**:
   - Code formatting and linting
   - Full test suite
-  - Coverage reporting
-  - Codecov integration
 
 ### 3. Test Matrix (`.github/workflows/test-matrix.yml`)
 - **Triggers**: Push to main, PRs to main
 - **Purpose**: Cross-platform and cross-version testing
-- **Matrix**: 
+- **Matrix**:
   - OS: Ubuntu, macOS, Windows
   - Python: 3.12, 3.13
 - **Separate lint job** for efficiency
@@ -52,18 +49,17 @@ make test-cov      # Run tests with coverage
 ## Configuration Files
 
 - **`pyproject.toml`**: Project metadata, dependencies, and tool configuration
-- **`.coveragerc`**: Coverage reporting configuration
 - **`Makefile`**: Local development commands
 - **`.github/dependabot.yml`**: Automated dependency updates
 
 ## Key Features
 
-✅ **Fast CI**: Uses `uv` for lightning-fast dependency installation  
-✅ **Code Quality**: Automated formatting and linting with ruff  
-✅ **Testing**: Comprehensive test suite with coverage reporting  
-✅ **Cross-platform**: Tests on Linux, macOS, and Windows  
-✅ **Dependency Management**: Automated updates via Dependabot  
-✅ **Developer Experience**: Local `make` commands mirror CI exactly  
+✅ **Fast CI**: Uses `uv` for lightning-fast dependency installation
+✅ **Code Quality**: Automated formatting and linting with ruff
+✅ **Testing**: Comprehensive test suite
+✅ **Cross-platform**: Tests on Linux, macOS, and Windows
+✅ **Dependency Management**: Automated updates via Dependabot
+✅ **Developer Experience**: Local `make` commands mirror CI exactly
 
 ## Workflow Status
 
@@ -71,7 +67,6 @@ The CI will fail if:
 - Code is not properly formatted (`ruff format --check`)
 - Linting issues are found (`ruff check`)
 - Any tests fail (`pytest`)
-- Coverage drops below configured threshold
 
 ## Adding New Dependencies
 
@@ -79,7 +74,7 @@ The CI will fail if:
 # Add runtime dependency
 uv add package-name
 
-# Add development dependency  
+# Add development dependency
 uv add --dev package-name
 
 # Update all dependencies

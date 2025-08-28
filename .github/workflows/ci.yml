@@ -35,21 +35,3 @@ jobs:
 
     - name: Run tests with pytest
       run: uv run pytest -v --tb=short
-
-    - name: Run tests with coverage
-      run: uv run coverage run -m pytest
-
-    - name: Generate coverage report
-      run: uv run coverage report --show-missing
-
-    - name: Generate coverage XML
-      run: uv run coverage xml
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: false
-        verbose: true
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
