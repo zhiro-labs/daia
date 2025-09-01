@@ -32,7 +32,7 @@ nodeenv==1.9.1
 openai==1.101.0
 packaging==25.0
 pillow==11.3.0
-platformdirs==4.3.8
+platformdirs==4.4.0
 pluggy==1.6.0
 pocketflow==0.0.3
 pre-commit==4.3.0
