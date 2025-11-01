@@ -81,11 +81,13 @@ def download_noto_font(force=False):
 
     try:
         # Add timeout and progress tracking
-        response = requests.get(url, stream=True, timeout=(10, 30))  # 10s connect, 30s read timeout
+        response = requests.get(
+            url, stream=True, timeout=(10, 30)
+        )  # 10s connect, 30s read timeout
         response.raise_for_status()  # Raise an exception for bad status codes
 
         # Get total file size for progress tracking
-        total_size = int(response.headers.get('content-length', 0))
+        total_size = int(response.headers.get("content-length", 0))
         downloaded_size = 0
 
         print(f"📦 Total size: {total_size / (1024 * 1024):.1f} MB")
@@ -99,10 +101,14 @@ def download_noto_font(force=False):
                     # Show progress every 5MB
                     if total_size > 0 and downloaded_size % (5 * 1024 * 1024) < 8192:
                         progress = (downloaded_size / total_size) * 100
-                        print(f"📥 Progress: {progress:.1f}% ({downloaded_size / (1024 * 1024):.1f} MB)")
+                        print(
+                            f"📥 Progress: {progress:.1f}% ({downloaded_size / (1024 * 1024):.1f} MB)"
+                        )
 
         if total_size > 0:
-            print(f"✅ Download complete: 100% ({downloaded_size / (1024 * 1024):.1f} MB)")
+            print(
+                f"✅ Download complete: 100% ({downloaded_size / (1024 * 1024):.1f} MB)"
+            )
 
         print(f"✓ Font downloaded successfully to {zip_filename}")
         print(f"✓ File size: {zip_filename.stat().st_size / (1024 * 1024):.1f} MB")
