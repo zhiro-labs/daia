@@ -80,12 +80,29 @@ def download_noto_font(force=False):
     print(f"Destination: {zip_filename}")
 
     try:
-        response = requests.get(url, stream=True)
+        # Add timeout and progress tracking
+        response = requests.get(url, stream=True, timeout=(10, 30))  # 10s connect, 30s read timeout
         response.raise_for_status()  # Raise an exception for bad status codes
+
+        # Get total file size for progress tracking
+        total_size = int(response.headers.get('content-length', 0))
+        downloaded_size = 0
+
+        print(f"📦 Total size: {total_size / (1024 * 1024):.1f} MB")
 
         with open(zip_filename, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+                if chunk:  # filter out keep-alive chunks
+                    f.write(chunk)
+                    downloaded_size += len(chunk)
+
+                    # Show progress every 5MB
+                    if total_size > 0 and downloaded_size % (5 * 1024 * 1024) < 8192:
+                        progress = (downloaded_size / total_size) * 100
+                        print(f"📥 Progress: {progress:.1f}% ({downloaded_size / (1024 * 1024):.1f} MB)")
+
+        if total_size > 0:
+            print(f"✅ Download complete: 100% ({downloaded_size / (1024 * 1024):.1f} MB)")
 
         print(f"✓ Font downloaded successfully to {zip_filename}")
         print(f"✓ File size: {zip_filename.stat().st_size / (1024 * 1024):.1f} MB")
@@ -111,6 +128,12 @@ def download_noto_font(force=False):
             for font in extracted_ttc_fonts:
                 print(f"  - {font.name} ({font.stat().st_size / (1024 * 1024):.1f} MB)")
 
+    except requests.exceptions.Timeout as e:
+        print(f"✗ Download timeout: {e}")
+        print("💡 Try running again with a better internet connection")
+        # Clean up partial download
+        if zip_filename.exists():
+            zip_filename.unlink()
     except requests.exceptions.RequestException as e:
         print(f"✗ Error downloading font: {e}")
         # Clean up partial download

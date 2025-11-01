@@ -69,6 +69,8 @@ This project requires Python 3.12+. `uv` will gracefully handle the Python versi
     ```bash
     uv run main.py
     ```
+    > ℹ️ **Note:**
+    > On first run, the bot will automatically download Noto CJK fonts (~100MB) for high-quality table image rendering. This may take a few minutes depending on your internet connection.
 
 ## Discord Application Permissions and Intents
 
