@@ -126,6 +126,26 @@ Daia is designed for easy interaction. Here's how you can use its features:
 
 - **Long Message Handling**: Daia automatically splits long messages into multiple smaller ones, preserving the original formatting. This is an automatic feature to work around Discord's character limit.
 
+## Development
+
+### Makefile Commands
+
+This project includes a Makefile with convenient shortcuts for common development tasks:
+
+```bash
+make help          # Show all available commands
+make install       # Install dependencies with uv
+make test          # Run tests with pytest
+make lint          # Check code quality with ruff
+make format        # Auto-format code with ruff
+make format-check  # Check if code is properly formatted
+make clean         # Remove Python cache files
+make ci            # Run all CI checks locally (lint + format-check + test)
+make all           # Complete workflow (install + lint + format + test)
+```
+
+The `make ci` command runs the same checks as your GitHub Actions CI, allowing you to verify your code locally before pushing.
+
 ## Project Structure
 
 ```
@@ -135,6 +155,7 @@ Daia is designed for easy interaction. Here's how you can use its features:
 ├── main.py
 ├── pyproject.toml
 ├── README.md
+├── Makefile
 ├── nodes/
 │   ├── __init__.py
 │   ├── contextual_system_prompt.py
