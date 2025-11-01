@@ -39,11 +39,11 @@ make test          # Run tests
   - Full test suite
 
 ### 3. Test Matrix (`.github/workflows/test-matrix.yml`)
-- **Triggers**: Push to main, PRs to main
-- **Purpose**: Cross-platform and cross-version testing
+- **Triggers**: Push to main/dev, PRs to main/dev
+- **Purpose**: Cross-platform testing
 - **Matrix**:
   - OS: Ubuntu, macOS, Windows
-  - Python: 3.12, 3.13
+  - Python: 3.12
 - **Separate lint job** for efficiency
 
 ## Configuration Files
