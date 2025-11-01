@@ -25,20 +25,14 @@ make test          # Run tests
 
 ## GitHub Actions Workflows
 
-### 1. Quick Check (`.github/workflows/quick-check.yml`)
-- **Triggers**: Every push and pull request
-- **Purpose**: Fast feedback on basic code quality
-- **Runs**: Formatting check, linting, and tests
-- **Duration**: ~1-2 minutes
-
-### 2. Main CI (`.github/workflows/ci.yml`)
-- **Triggers**: Push to main/develop, PRs to main/develop
+### 1. Main CI (`.github/workflows/ci.yml`)
+- **Triggers**: Push to main/dev, PRs to main/dev
 - **Purpose**: Comprehensive testing and code quality
 - **Includes**:
   - Code formatting and linting
   - Full test suite
 
-### 3. Test Matrix (`.github/workflows/test-matrix.yml`)
+### 2. Test Matrix (`.github/workflows/test-matrix.yml`)
 - **Triggers**: Push to main/dev, PRs to main/dev
 - **Purpose**: Cross-platform testing
 - **Matrix**:
