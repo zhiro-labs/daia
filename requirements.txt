@@ -27,7 +27,7 @@ identify==2.6.13
 idna==3.10
 iniconfig==2.1.0
 jiter==0.10.0
-multidict==6.6.4
+multidict==6.7.0
 nodeenv==1.9.1
 openai==1.101.0
 packaging==25.0
