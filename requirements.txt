@@ -36,7 +36,7 @@ platformdirs==4.3.8
 pluggy==1.6.0
 pocketflow==0.0.3
 pre-commit==4.3.0
-propcache==0.3.2
+propcache==0.4.1
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pydantic==2.11.7
