@@ -8,7 +8,7 @@ anyio==4.10.0
 attrs==25.3.0
 audioop-lts==0.2.2 ; python_full_version >= '3.13'
 cachetools==6.1.0
-certifi==2025.8.3
+certifi==2025.10.5
 cfgv==3.4.0
 charset-normalizer==3.4.3
 colorama==0.4.6 ; sys_platform == 'win32'
