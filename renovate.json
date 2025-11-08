@@ -9,6 +9,8 @@
     "enabled": true,
     "fileMatch": ["(^|/)uv\\.lock$", "(^|/)pyproject\\.toml$"]
   },
+  "branchPrefix": "renovate/dev-",
+  "baseBranches": ["dev"],
   "packageRules": [
     {
       "matchManagers": ["uv"],
