@@ -15,7 +15,7 @@ def mock_env_vars(monkeypatch):
         "DISCORD_BOT_ACTIVITY": "Testing",
         "ALLOWED_CHANNELS": "123456789,987654321",
         "HISTORY_LIMIT": "10",
-        "GEMINI_API_KEY": "test_gemini_key",
+        "CHAT_MODEL_API_KEY": "test_gemini_key",
         "CHAT_MODEL": "gemini-2.0-flash-exp",
         "CHAT_TEMPERATURE": "0.7",
         "CHAT_SYS_PROMPT_PATH": "config/chat_sys_prompt.txt.example",

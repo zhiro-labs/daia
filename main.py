@@ -35,7 +35,7 @@ ALLOWED_CHANNELS = {
 }
 HISTORY_LIMIT = int(os.getenv("HISTORY_LIMIT"))
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+CHAT_MODEL_API_KEY = os.getenv("CHAT_MODEL_API_KEY")
 CHAT_MODEL = os.getenv("CHAT_MODEL")
 CHAT_TEMPERATURE = os.getenv("CHAT_TEMPERATURE")
 CHAT_SYS_PROMPT_PATH = os.getenv("CHAT_SYS_PROMPT_PATH")
@@ -45,7 +45,7 @@ ENABLE_CONTEXTUAL_SYSTEM_PROMPT = env_onoff_to_bool(
 CHAT_MODEL_PROVIDER = os.getenv("CHAT_MODEL_PROVIDER", "gemini")  # Default to gemini
 
 
-genai_client = genai.Client(api_key=GEMINI_API_KEY)
+genai_client = genai.Client(api_key=CHAT_MODEL_API_KEY)
 with open(CHAT_SYS_PROMPT_PATH, encoding="utf-8") as file:
     genai_chat_system_prompt = file.read()
 genai_tools = types.Tool(google_search=types.GoogleSearch())
@@ -216,7 +216,7 @@ async def on_message(message: discord.Message):
 def main():
     print("🚀 Hello from daia!")
     print(f"🔑 Discord token loaded: {'✅' if DISCORD_BOT_TOKEN else '❌'}")
-    print(f"🔑 Gemini API key loaded: {'✅' if GEMINI_API_KEY else '❌'}")
+    print(f"🔑 Gemini API key loaded: {'✅' if CHAT_MODEL_API_KEY else '❌'}")
     print(f"🤖 Chat model: {CHAT_MODEL}")
     print(f"🌡️ Chat temperature: {CHAT_TEMPERATURE}")
     print(f"📄 Chat system prompt path: {CHAT_SYS_PROMPT_PATH}")
