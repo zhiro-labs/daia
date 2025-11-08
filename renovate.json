@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:weekends"
+  ],
+  "timezone": "Asia/Taipei",
+  "uv": {
+    "enabled": true,
+    "fileMatch": ["(^|/)uv\\.lock$", "(^|/)pyproject\\.toml$"]
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["uv"],
+      "matchUpdateTypes": ["patch", "digest", "pin", "lockFileMaintenance"],
+      "groupName": "uv patch updates",
+      "automerge": true,
+      "prPriority": 1
+    },
+    {
+      "matchManagers": ["uv"],
+      "matchDepTypes": ["dev-dependencies"],
+      "groupName": "uv dev dependencies",
+      "automerge": true,
+      "prPriority": -1
+    },
+    {
+      "matchManagers": ["uv"],
+      "groupName": "uv dependencies",
+      "automerge": false,
+      "prPriority": 0
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 3am on monday"]
+  },
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Dependency Dashboard (Powered by Renovate)"
+}
