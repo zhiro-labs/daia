@@ -248,7 +248,7 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 ### Extensibility
 
-- [ ] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm?tab=readme-ov-file) support
+- [ ] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm) support
 - [ ] MCP support
 - [ ] OpenAI support
 - [ ] OpenAI compatible support
