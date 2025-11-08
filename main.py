@@ -42,7 +42,7 @@ CHAT_SYS_PROMPT_PATH = os.getenv("CHAT_SYS_PROMPT_PATH")
 ENABLE_CONTEXTUAL_SYSTEM_PROMPT = env_onoff_to_bool(
     os.getenv("ENABLE_CONTEXTUAL_SYSTEM_PROMPT")
 )
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")  # Default to gemini
+CHAT_MODEL_PROVIDER = os.getenv("CHAT_MODEL_PROVIDER", "gemini")  # Default to gemini
 
 
 genai_client = genai.Client(api_key=GEMINI_API_KEY)
@@ -91,7 +91,7 @@ async def create_message_flow():
         ENABLE_CONTEXTUAL_SYSTEM_PROMPT, genai_chat_system_prompt, HISTORY_LIMIT
     )
     llm_chat = LLMChat(
-        genai_client, CHAT_MODEL, CHAT_TEMPERATURE, genai_tools, provider=LLM_PROVIDER
+        genai_client, CHAT_MODEL, CHAT_TEMPERATURE, genai_tools, provider=CHAT_MODEL_PROVIDER
     )
     table_extractor = MarkdownTableExtractor()
     table_renderer = TableImageRenderer()
@@ -220,7 +220,7 @@ def main():
     print(f"🤖 Chat model: {CHAT_MODEL}")
     print(f"🌡️ Chat temperature: {CHAT_TEMPERATURE}")
     print(f"📄 Chat system prompt path: {CHAT_SYS_PROMPT_PATH}")
-    print(f"🔌 LLM Provider: {LLM_PROVIDER}")
+    print(f"🔌 LLM Provider: {CHAT_MODEL_PROVIDER}")
     print(f"🔌 Contextual system prompt: {ENABLE_CONTEXTUAL_SYSTEM_PROMPT}")
     print("🔌 Starting Discord bot...")
     bot.run(DISCORD_BOT_TOKEN)

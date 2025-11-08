@@ -20,7 +20,7 @@ def mock_env_vars(monkeypatch):
         "CHAT_TEMPERATURE": "0.7",
         "CHAT_SYS_PROMPT_PATH": "config/chat_sys_prompt.txt.example",
         "ENABLE_CONTEXTUAL_SYSTEM_PROMPT": "on",
-        "LLM_PROVIDER": "gemini",
+        "CHAT_MODEL_PROVIDER": "gemini",
     }
     for key, value in env_vars.items():
         monkeypatch.setenv(key, value)
