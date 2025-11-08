@@ -130,9 +130,12 @@ Daia is designed for easy interaction. Here's how you can use its features:
 
 ### Setting Up Development Environment
 
-For development work, you'll need the development dependencies which include testing and linting tools:
+The `dev` branch contains the latest development progress. To start developing:
 
 ```bash
+# Clone the repository and switch to dev branch
+git checkout dev
+
 # Install all dependencies including dev tools
 uv sync --dev
 ```
@@ -231,7 +234,7 @@ If your CI fails or you encounter linting issues:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue.
+Contributions are welcome! Please submit pull requests to the `dev` branch. Feel free to open an issue for any bugs or feature requests.
 
 ## Todo
 
