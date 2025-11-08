@@ -72,7 +72,7 @@ bot = commands.Bot(
 
 if not check_font_exists():
     print("🔤 Downloading Noto Sans CJK fonts for markdown table image rendering...")
-    print("� Thnis may take a few minutes depending on your connection (~100MB)")
+    print("� This may take a few minutes depending on your connection (~100MB)")
     try:
         download_noto_font()
         print("✅ Font download completed successfully!")
