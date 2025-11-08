@@ -157,6 +157,68 @@ def download_noto_font(force=False):
             zip_filename.unlink()
 
 
+def extract_existing_zip():
+    """Extract existing zip file if it exists."""
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent
+    fonts_dir = project_root / "assets" / "fonts"
+    zip_filename = fonts_dir / "03_NotoSansCJK-OTC.zip"
+    zip_extract_dir = fonts_dir / "03_NotoSansCJK-OTC"
+
+    if not zip_filename.exists():
+        return False
+
+    print(f"Found existing zip file: {zip_filename}")
+    print(f"Extracting to {zip_extract_dir}...")
+
+    try:
+        zip_extract_dir.mkdir(exist_ok=True)
+        with zipfile.ZipFile(zip_filename, "r") as zip_ref:
+            zip_ref.extractall(zip_extract_dir)
+
+        print(f"✓ Font extracted successfully to {zip_extract_dir}")
+
+        # Delete the zip file after successful extraction
+        zip_filename.unlink()
+        print("✓ Zip file deleted")
+
+        # Show extracted TTC files
+        extracted_ttc_fonts = list(zip_extract_dir.glob("*.ttc"))
+        if extracted_ttc_fonts:
+            print("✓ Extracted TTC font files:")
+            for font in extracted_ttc_fonts:
+                print(f"  - {font.name} ({font.stat().st_size / (1024 * 1024):.1f} MB)")
+        return True
+
+    except zipfile.BadZipFile as e:
+        print(f"✗ Error: The zip file is corrupted or invalid: {e}")
+        response = input(
+            "\nWould you like to delete the corrupted zip and redownload? (yes/no): "
+        )
+        if response.lower() == "yes":
+            zip_filename.unlink()
+            print("✓ Corrupted zip file deleted")
+            print("\nRedownloading font...")
+            download_noto_font(force=True)
+        else:
+            print("Extraction cancelled. Please fix the issue manually.")
+        return False
+
+    except Exception as e:
+        print(f"✗ Unexpected error during extraction: {e}")
+        response = input(
+            "\nWould you like to delete the zip file and redownload? (yes/no): "
+        )
+        if response.lower() == "yes":
+            zip_filename.unlink()
+            print("✓ Zip file deleted")
+            print("\nRedownloading font...")
+            download_noto_font(force=True)
+        else:
+            print("Extraction cancelled. Please fix the issue manually.")
+        return False
+
+
 if __name__ == "__main__":
     import sys
 
@@ -168,8 +230,17 @@ if __name__ == "__main__":
         else:
             print("Usage: python download_font.py [check|force]")
     else:
-        # Default behavior: check first, then download if needed
-        if not check_font_exists():
+        # Default behavior: check if zip exists and extract, or check fonts, or download
+        current_dir = Path(__file__).parent
+        project_root = current_dir.parent
+        fonts_dir = project_root / "assets" / "fonts"
+        zip_filename = fonts_dir / "03_NotoSansCJK-OTC.zip"
+
+        # First, check if zip exists and extract it
+        if zip_filename.exists():
+            print("Zip file found. Extracting...")
+            extract_existing_zip()
+        elif not check_font_exists():
             print("\nDownloading font...")
             download_noto_font()
         else:
