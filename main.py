@@ -214,7 +214,7 @@ async def on_message(message: discord.Message):
 
 
 def main():
-    print("🚀 Hello from daia-build!")
+    print("🚀 Hello from daia!")
     print(f"🔑 Discord token loaded: {'✅' if DISCORD_BOT_TOKEN else '❌'}")
     print(f"🔑 Gemini API key loaded: {'✅' if GEMINI_API_KEY else '❌'}")
     print(f"🤖 Chat model: {CHAT_MODEL}")
