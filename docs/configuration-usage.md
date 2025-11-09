@@ -6,7 +6,7 @@ nav_order: 3
 
 ## Environment Variables (`.env`)
 | Variable | Required | Description |
-|----------|----------|-------------|
+|----------|:--------:|-------------|
 | `DISCORD_BOT_TOKEN` | Yes | Bot token |
 | `CHAT_MODEL_API_KEY` | Yes | Gemini API key |
 | `CHAT_MODEL` | Yes | e.g., `gemini-1.5-flash` |
