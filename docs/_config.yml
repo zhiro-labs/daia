@@ -1,4 +1,4 @@
-title: Daia – Discord AI Agent
+title: Daia
 description: Intelligent Discord bot powered by Google Gemini
 remote_theme: just-the-docs/just-the-docs
 
@@ -19,7 +19,7 @@ nav_enabled: true
 nav_sort: case_insensitive
 
 # Footer
-footer_content: "Copyright &copy; 2025 Daia. Distributed under the MIT License."
+footer_content: "Copyright &copy; 2025 Zhiro Labs. Distributed under the MIT License."
 
 # Back to top link
 back_to_top: true
