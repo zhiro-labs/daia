@@ -28,3 +28,11 @@ back_to_top_text: "Back to top"
 # Plugins
 plugins:
   - jekyll-seo-tag
+
+# Custom CSS
+aux_links:
+  "GitHub": "https://github.com/zhiro-labs/daia"
+
+# Custom head includes
+head_custom: |
+  <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}"

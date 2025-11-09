@@ -1,0 +1,9 @@
+.main-content {
+  padding-top: 2rem;
+}
+
+.main-content img {
+  margin: 2rem auto;
+  display: block;
+  max-width: 100%;
+}
