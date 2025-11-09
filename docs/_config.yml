@@ -1,5 +1,5 @@
 title: Daia
-description: Intelligent Discord bot powered by Google Gemini and PocketFlow
+description: Discord AI Agent powered by Google Gemini and PocketFlow
 remote_theme: just-the-docs/just-the-docs
 
 url: https://zhiro-labs.github.io
@@ -45,9 +45,7 @@ plugins:
 
 # SEO and branding
 author: Zhiro Labs
-
-# Uncomment to add a logo image in the header (will appear next to or replace title)
-# logo: "/daia/assets/cover.png"
+logo: "/daia/assets/daia-logo.png"
 
 # Custom CSS and links
 aux_links:

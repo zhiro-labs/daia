@@ -2,7 +2,7 @@
 layout: default
 title: Home
 nav_order: 1
-description: Intelligent Discord bot powered by Google Gemini and PocketFlow
+description: Discord AI bot powered by Google Gemini and PocketFlow
 ---
 
 # Daia: Discord AI Agent
