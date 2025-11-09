@@ -28,6 +28,4 @@ It brings conversational AI, markdown table rendering, message-history processin
 
 ## Quick Links
 
-- [Getting Started →](getting-started)
-- [Configuration & Usage →](configuration-usage)
 - [GitHub Repository](https://github.com/zhiro-labs/daia)
