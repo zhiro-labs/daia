@@ -2,10 +2,10 @@
 layout: default
 title: Home
 nav_order: 1
-description: Intelligent Discord bot powered by Google Gemini
+description: Discord AI bot powered by Google Gemini
 ---
 
-# Daia – Discord AI Agent
+# Daia: Discord AI Agent
 {: .no_toc }
 
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/zhiro-labs/daia/blob/main/LICENSE)
