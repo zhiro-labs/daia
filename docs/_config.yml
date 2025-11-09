@@ -1,7 +1,30 @@
 title: Daia – Discord AI Agent
 description: Intelligent Discord bot powered by Google Gemini
-theme: jekyll-theme-minimal
+theme: just-the-docs
+
+url: https://zhiro-labs.github.io
+baseurl: /daia
+
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+
+# Just the Docs settings
+search_enabled: true
+heading_anchors: true
+
+# Navigation
+nav_enabled: true
+nav_sort: case_insensitive
+
+# Footer
+footer_content: "Copyright &copy; 2025 Daia. Distributed under the MIT License."
+
+# Back to top link
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Plugins
+plugins:
+  - jekyll-seo-tag

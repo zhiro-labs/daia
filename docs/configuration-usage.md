@@ -1,5 +1,7 @@
 ---
+layout: default
 title: Configuration & Usage
+nav_order: 3
 ---
 
 ## Environment Variables (`.env`)
