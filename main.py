@@ -91,7 +91,11 @@ async def create_message_flow():
         ENABLE_CONTEXTUAL_SYSTEM_PROMPT, genai_chat_system_prompt, HISTORY_LIMIT
     )
     llm_chat = LLMChat(
-        genai_client, CHAT_MODEL, CHAT_TEMPERATURE, genai_tools, provider=CHAT_MODEL_PROVIDER
+        genai_client,
+        CHAT_MODEL,
+        CHAT_TEMPERATURE,
+        genai_tools,
+        provider=CHAT_MODEL_PROVIDER,
     )
     table_extractor = MarkdownTableExtractor()
     table_renderer = TableImageRenderer()
