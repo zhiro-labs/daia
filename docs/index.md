@@ -8,6 +8,8 @@ description: Intelligent Discord bot powered by Google Gemini and PocketFlow
 # Daia: Discord AI Agent
 {: .no_toc }
 
+![Daia Cover](assets/cover.png)
+
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/zhiro-labs/daia/blob/main/LICENSE)
 ![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)
 [![CI](https://github.com/zhiro-labs/daia/actions/workflows/ci.yml/badge.svg)](https://github.com/zhiro-labs/daia/actions/workflows/ci.yml)

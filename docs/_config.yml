@@ -43,9 +43,11 @@ callouts:
 plugins:
   - jekyll-seo-tag
 
-# SEO
-logo: "/assets/readme/cover.png"
+# SEO and branding
 author: Zhiro Labs
+
+# Uncomment to add a logo image in the header (will appear next to or replace title)
+# logo: "/daia/assets/cover.png"
 
 # Custom CSS and links
 aux_links:
