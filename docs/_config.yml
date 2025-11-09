@@ -45,7 +45,7 @@ plugins:
 
 # SEO and branding
 author: Zhiro Labs
-logo: "/daia/assets/daia-logo.png"
+# logo: "/daia/assets/daia-logo.png"
 
 # Custom CSS and links
 aux_links:
