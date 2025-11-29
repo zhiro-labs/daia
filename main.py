@@ -29,7 +29,6 @@ load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 # Use runtime config for dynamic values (can be changed via Discord commands)
 DISCORD_BOT_ACTIVITY = runtime_config.discord_activity
-ALLOWED_CHANNELS = runtime_config.allowed_channels
 HISTORY_LIMIT = int(os.getenv("HISTORY_LIMIT"))
 
 CHAT_MODEL_API_KEY = os.getenv("CHAT_MODEL_API_KEY")
@@ -255,7 +254,7 @@ async def on_message(message: discord.Message):
     # Only respond to messages that mention the bot or are direct messages
     is_mentioned = bot.user.mentioned_in(message)
     is_dm = isinstance(message.channel, discord.DMChannel)
-    is_in_allowed_channel = message.channel.id in ALLOWED_CHANNELS
+    is_in_allowed_channel = message.channel.id in runtime_config.allowed_channels
 
     print(
         f"🔍 [on_message] Bot mentioned: {is_mentioned}, Is DM: {is_dm}, Is in allowed channel: {is_in_allowed_channel}"
