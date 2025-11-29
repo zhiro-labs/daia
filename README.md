@@ -9,7 +9,7 @@
     <a href="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml"><img src="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml/badge.svg" alt="Cross-Platform Tests"></a>
 </p>
 
-Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
+Daia (Discord AI Agent) is an intelligent Discord bot optimized for Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
 
 ## Features
 
