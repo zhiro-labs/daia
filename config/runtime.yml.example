@@ -2,9 +2,11 @@
 # This file is auto-generated and will be updated by the bot
 
 # List of channel IDs where the bot is allowed to respond
+# Can be managed via slash commands: /addchannel, /removechannel, /listchannels (Admin only)
 allowed_channels: []
 
 # Timezone for bot operations (e.g., America/New_York, Europe/London, Asia/Tokyo)
+# Can be changed via slash command: /settimezone (Admin only)
 timezone: UTC
 
 # Discord bot activity status message
