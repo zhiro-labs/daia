@@ -96,6 +96,7 @@ Copy the example files to create your own configuration:
 ```bash
 cp .env.example .env
 cp config/chat_sys_prompt.txt.example config/chat_sys_prompt.txt
+cp config/runtime.yml.example config/runtime.yml
 ```
 
 ### Step 2: Edit Environment Variables
@@ -112,15 +113,32 @@ HISTORY_LIMIT=50
 CHAT_SYS_PROMPT_PATH=config/chat_sys_prompt.txt
 
 # Optional
-DISCORD_BOT_ACTIVITY=Chatting with friends
-ALLOWED_CHANNELS=123456789,987654321
 ENABLE_CONTEXTUAL_SYSTEM_PROMPT=on
 CHAT_MODEL_PROVIDER=gemini
 ```
 
-See the [Configuration Reference](configuration-usage.html#environment-variables) for detailed explanations of each variable.
+See the [Configuration Reference](configuration-usage.html#configuration-files) for detailed explanations of each variable.
 
-### Step 3: Customize System Prompt
+### Step 3: Configure Runtime Settings
+
+Edit `config/runtime.yml` to configure runtime behavior:
+
+```yaml
+# List of channel IDs where the bot responds without mentions
+allowed_channels: []
+
+# Timezone for bot operations
+timezone: UTC
+
+# Discord bot activity status message
+discord_activity: Surfing
+```
+
+To find channel IDs:
+1. Enable Developer Mode in Discord (User Settings → Advanced → Developer Mode)
+2. Right-click a channel and select "Copy Channel ID"
+
+### Step 4: Customize System Prompt
 
 Edit `config/chat_sys_prompt.txt` to customize your bot's personality and behavior. This file contains the instructions that guide how Daia responds to users.
 

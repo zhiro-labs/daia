@@ -17,11 +17,15 @@ Complete guide to configuring and using Daia.
 
 ---
 
-## Environment Variables
+## Configuration Files
 
-All configuration is done through environment variables in the `.env` file.
+Daia uses two configuration files:
 
-### Required Variables
+### Environment Variables (`.env`)
+
+Static configuration and secrets that don't change at runtime.
+
+#### Required Variables
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -32,14 +36,22 @@ All configuration is done through environment variables in the `.env` file.
 | `HISTORY_LIMIT` | Maximum number of messages to fetch from history | `50` |
 | `CHAT_SYS_PROMPT_PATH` | Path to the system prompt file | `config/chat_sys_prompt.txt` |
 
-### Optional Variables
+#### Optional Variables
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `DISCORD_BOT_ACTIVITY` | Activity status displayed for the bot | None | `Surfing`, `Listening to music` |
-| `ALLOWED_CHANNELS` | Comma-separated list of channel IDs where bot responds without mentions | None | `123456789,987654321` |
 | `ENABLE_CONTEXTUAL_SYSTEM_PROMPT` | Enable user recognition by display name | `off` | `on` (recommended) |
 | `CHAT_MODEL_PROVIDER` | LLM provider to use | `gemini` | `gemini` |
+
+### Runtime Configuration (`config/runtime.yml`)
+
+Settings that can be modified while the bot is running.
+
+| Setting | Description | Default | Example |
+|---------|-------------|---------|---------|
+| `allowed_channels` | List of channel IDs where bot responds without mentions | `[]` | `[123456789, 987654321]` |
+| `timezone` | Timezone for bot operations | `UTC` | `America/New_York`, `Europe/London` |
+| `discord_activity` | Activity status displayed for the bot | `Surfing` | `Listening to music` |
 
 ### Configuration Details
 
@@ -66,16 +78,19 @@ Number of previous messages to include as context:
 - **Medium values (30-50)**: Balanced (recommended)
 - **Higher values (50-100)**: More context, slower, higher token usage
 
-#### ALLOWED_CHANNELS
+#### allowed_channels
 
-If set, the bot will respond to all messages in these channels without requiring a mention. To find a channel ID:
+If set in `config/runtime.yml`, the bot will respond to all messages in these channels without requiring a mention. To find a channel ID:
 
 1. Enable Developer Mode in Discord (User Settings → Advanced → Developer Mode)
 2. Right-click a channel and select "Copy Channel ID"
 
-Example:
-```bash
-ALLOWED_CHANNELS=1234567890,9876543210,1122334455
+Example in `config/runtime.yml`:
+```yaml
+allowed_channels:
+  - 1234567890
+  - 9876543210
+  - 1122334455
 ```
 
 #### ENABLE_CONTEXTUAL_SYSTEM_PROMPT
@@ -133,7 +148,7 @@ There are three ways to interact with Daia:
 
 #### 1. In Allowed Channels
 
-If you've configured `ALLOWED_CHANNELS`, simply type your message:
+If you've configured `allowed_channels` in `config/runtime.yml`, simply type your message:
 
 ```
 What's the weather like today?
@@ -179,6 +194,39 @@ This is useful when:
 - Switching topics
 - The bot seems confused by previous context
 - You want to reset the conversation
+
+### Managing Allowed Channels
+
+Administrators can dynamically manage which channels the bot responds to without being mentioned:
+
+#### `/addchannel`
+Add the current channel to the allowed list:
+
+```
+/addchannel
+```
+
+After running this command, the bot will respond to all messages in this channel without requiring a mention.
+
+#### `/removechannel`
+Remove the current channel from the allowed list:
+
+```
+/removechannel
+```
+
+After running this command, users must mention the bot to get a response in this channel.
+
+#### `/listchannels`
+View all channels currently in the allowed list:
+
+```
+/listchannels
+```
+
+This shows all channels where the bot will respond automatically, along with their channel IDs.
+
+**Note**: These commands require Administrator permissions and only affect runtime behavior. Changes are saved to `config/runtime.yml` and persist across bot restarts.
 
 ---
 
@@ -259,7 +307,7 @@ You can use the same bot in multiple servers. Each server maintains its own conv
 
 To restrict the bot to specific channels:
 
-1. Set `ALLOWED_CHANNELS` to only the channels where you want automatic responses
+1. Set `allowed_channels` in `config/runtime.yml` to only the channels where you want automatic responses
 2. In other channels, users must mention the bot
 3. Use Discord's permission system to prevent the bot from seeing certain channels
 
@@ -289,10 +337,16 @@ For better performance:
 
 ### Community Support Bot
 
+`.env`:
 ```bash
-ALLOWED_CHANNELS=support-channel-id
 ENABLE_CONTEXTUAL_SYSTEM_PROMPT=on
 HISTORY_LIMIT=30
+```
+
+`config/runtime.yml`:
+```yaml
+allowed_channels:
+  - support-channel-id
 ```
 
 System prompt:
@@ -304,10 +358,15 @@ Be patient and friendly. If you don't know something, direct users to the docume
 
 ### Personal Assistant
 
+`.env`:
 ```bash
-ALLOWED_CHANNELS=  # Leave empty, require mentions
 ENABLE_CONTEXTUAL_SYSTEM_PROMPT=on
 HISTORY_LIMIT=50
+```
+
+`config/runtime.yml`:
+```yaml
+allowed_channels: []  # Leave empty, require mentions
 ```
 
 System prompt:
@@ -339,7 +398,7 @@ Support English, Chinese, Japanese, and Korean.
 
 **Issue**: Bot is too chatty in channels.
 
-**Solution**: Remove the channel from `ALLOWED_CHANNELS` so users must mention the bot.
+**Solution**: Remove the channel from `allowed_channels` in `config/runtime.yml` so users must mention the bot.
 
 ### Bot doesn't remember context
 

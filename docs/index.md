@@ -58,7 +58,10 @@ Automatically splits long messages into smaller chunks while preserving markdown
 Built-in search capabilities through Gemini tools. When Daia needs up-to-date information, it can automatically search the web to provide accurate answers.
 
 ### 💬 Slash Commands
-Includes a `/newchat` command for starting fresh conversation sessions, clearing the context and beginning anew.
+- `/newchat`: Start fresh conversation sessions, clearing the context and beginning anew
+- `/addchannel`: (Admin only) Add current channel to allowed list for automatic responses
+- `/removechannel`: (Admin only) Remove current channel from allowed list
+- `/listchannels`: (Admin only) View all channels in the allowed list
 
 ### 📝 Context-Aware History
 Processes Discord message history with context awareness, allowing Daia to understand the flow of conversation and provide relevant responses.

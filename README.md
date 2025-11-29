@@ -59,9 +59,11 @@ This project requires Python 3.12+. `uv` will gracefully handle the Python versi
       ```bash
       cp .env.example .env
       cp config/chat_sys_prompt.txt.example config/chat_sys_prompt.txt
+      cp config/runtime.yml.example config/runtime.yml
       ```
     - Edit the `.env` file to add your Discord bot token and Gemini API key.
     - Edit `config/chat_sys_prompt.txt` to customize the bot's personality and instructions.
+    - Edit `config/runtime.yml` to configure runtime settings and behavior.
 
 4.  **Run the bot:**
     ```bash
@@ -94,11 +96,13 @@ When inviting the bot to your server, ensure it has the following permissions:
 
 ## Configuration
 
-Daia is configured using environment variables. These can be set in a `.env` file in the project root.
+Daia uses two configuration files:
+
+### Environment Variables (`.env`)
+
+These are set in a `.env` file in the project root:
 
 - `DISCORD_BOT_TOKEN`: Your Discord bot token. **(Required)**
-- `DISCORD_BOT_ACTIVITY`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music"). Optional.
-- `ALLOWED_CHANNELS`: A comma-separated list of channel IDs where the bot is allowed to respond without being mentioned. If this is not set, the bot will only respond to direct messages and mentions.
 - `HISTORY_LIMIT`: The maximum number of messages to fetch from the channel history. **(Required)**
 - `CHAT_MODEL_API_KEY`: Your Google Gemini API key. **(Required)**
 - `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro"). **(Required)**
@@ -106,6 +110,14 @@ Daia is configured using environment variables. These can be set in a `.env` fil
 - `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file. **(Required)**
 - `ENABLE_CONTEXTUAL_SYSTEM_PROMPT`: Set to `on` to enable the contextual system prompt, which allows the bot to recognize and address users by their display name. The recommended setting is `on` (as set in `.env.example`). If the variable is not set, it defaults to `off`.
 - `CHAT_MODEL_PROVIDER`: The LLM provider to use. Currently supports `gemini`. Defaults to `gemini`.
+
+### Runtime Configuration (`config/runtime.yml`)
+
+These settings can be modified at runtime and are stored in `config/runtime.yml`:
+
+- `allowed_channels`: A list of channel IDs where the bot is allowed to respond without being mentioned. If empty, the bot will only respond to direct messages and mentions.
+- `timezone`: The timezone for bot operations (e.g., "America/New_York", "Europe/London", "Asia/Tokyo"). Defaults to "UTC".
+- `discord_activity`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music").
 
 ## Usage
 
@@ -119,6 +131,11 @@ Daia is designed for easy interaction. Here's how you can use its features:
 - **Continue the Conversation**: Daia remembers the recent conversation history. You can simply send a new message to continue the conversation without needing to mention the bot again.
 
 - **Start a New Chat Session**: To start a fresh conversation and clear the context, use the `/newchat` slash command. This will make the bot forget the previous conversation history in that channel.
+
+- **Channel Management** (Administrator only): Control which channels the bot can respond to without being mentioned:
+  - `/addchannel`: Add the current channel to the bot's allowed list. The bot will respond to all messages in this channel.
+  - `/removechannel`: Remove the current channel from the bot's allowed list. The bot will only respond when mentioned.
+  - `/listchannels`: View all channels currently in the allowed list.
 
 - **Automatic Table Rendering**: When Daia's response contains a markdown table, it will automatically be rendered as an image for better readability. This feature works automatically without any specific commands.
 
