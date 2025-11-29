@@ -19,6 +19,7 @@ from utils import (
     create_message_data,
     download_noto_font,
     env_onoff_to_bool,
+    runtime_config,
     validate_message_data_types,
 )
 
@@ -26,13 +27,9 @@ from utils import (
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-DISCORD_BOT_ACTIVITY = os.getenv("DISCORD_BOT_ACTIVITY")
-# Parse comma-separated channel IDs from environment variable into a set of integers
-ALLOWED_CHANNELS = {
-    int(stripped)
-    for ch in os.getenv("ALLOWED_CHANNELS", "").split(",")
-    if (stripped := ch.strip()) and stripped.isdigit()
-}
+# Use runtime config for dynamic values (can be changed via Discord commands)
+DISCORD_BOT_ACTIVITY = runtime_config.discord_activity
+ALLOWED_CHANNELS = runtime_config.allowed_channels
 HISTORY_LIMIT = int(os.getenv("HISTORY_LIMIT"))
 
 CHAT_MODEL_API_KEY = os.getenv("CHAT_MODEL_API_KEY")
@@ -147,6 +144,98 @@ async def newchat(interaction: discord.Interaction):
         print(f"❌ [newchat] Error sending new chat marker: {e}")
         await interaction.response.send_message(
             "Failed to send new chat marker.", ephemeral=True
+        )
+
+
+@bot.tree.command(
+    name="addchannel", description="Add current channel to bot's allowed list"
+)
+@commands.has_permissions(administrator=True)
+async def addchannel(interaction: discord.Interaction):
+    """Slash command to add current channel to allowed channels"""
+    try:
+        channel_id = interaction.channel.id
+        was_added = runtime_config.add_channel(channel_id)
+
+        if was_added:
+            await interaction.response.send_message(
+                f"✅ Added {interaction.channel.mention} to allowed channels list",
+                ephemeral=True,
+            )
+            print(f"✅ [addchannel] Added channel {channel_id} to allowed list")
+        else:
+            await interaction.response.send_message(
+                f"ℹ️ {interaction.channel.mention} is already in the allowed list",
+                ephemeral=True,
+            )
+            print(f"ℹ️ [addchannel] Channel {channel_id} already in allowed list")
+    except Exception as e:
+        print(f"❌ [addchannel] Error adding channel: {e}")
+        await interaction.response.send_message(
+            "Failed to add channel to allowed list.", ephemeral=True
+        )
+
+
+@bot.tree.command(
+    name="removechannel", description="Remove current channel from bot's allowed list"
+)
+@commands.has_permissions(administrator=True)
+async def removechannel(interaction: discord.Interaction):
+    """Slash command to remove current channel from allowed channels"""
+    try:
+        channel_id = interaction.channel.id
+        was_removed = runtime_config.remove_channel(channel_id)
+
+        if was_removed:
+            await interaction.response.send_message(
+                f"✅ Removed {interaction.channel.mention} from allowed channels list",
+                ephemeral=True,
+            )
+            print(f"✅ [removechannel] Removed channel {channel_id} from allowed list")
+        else:
+            await interaction.response.send_message(
+                f"ℹ️ {interaction.channel.mention} was not in the allowed list",
+                ephemeral=True,
+            )
+            print(
+                f"ℹ️ [removechannel] Channel {channel_id} not found in allowed list"
+            )
+    except Exception as e:
+        print(f"❌ [removechannel] Error removing channel: {e}")
+        await interaction.response.send_message(
+            "Failed to remove channel from allowed list.", ephemeral=True
+        )
+
+
+@bot.tree.command(
+    name="listchannels", description="List all channels where bot is allowed"
+)
+@commands.has_permissions(administrator=True)
+async def listchannels(interaction: discord.Interaction):
+    """Slash command to list all allowed channels"""
+    try:
+        allowed = runtime_config.allowed_channels
+        if not allowed:
+            await interaction.response.send_message(
+                "ℹ️ No channels in allowed list. Bot will only respond to mentions and DMs.",
+                ephemeral=True,
+            )
+        else:
+            channel_mentions = []
+            for channel_id in allowed:
+                channel = bot.get_channel(channel_id)
+                if channel:
+                    channel_mentions.append(f"• {channel.mention} (ID: {channel_id})")
+                else:
+                    channel_mentions.append(f"• Unknown channel (ID: {channel_id})")
+
+            message = "**Allowed Channels:**\n" + "\n".join(channel_mentions)
+            await interaction.response.send_message(message, ephemeral=True)
+            print(f"✅ [listchannels] Listed {len(allowed)} allowed channels")
+    except Exception as e:
+        print(f"❌ [listchannels] Error listing channels: {e}")
+        await interaction.response.send_message(
+            "Failed to list allowed channels.", ephemeral=True
         )
 
 

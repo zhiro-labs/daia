@@ -1,0 +1,11 @@
+# Runtime configuration - can be modified via Discord commands
+# This file is auto-generated and will be updated by the bot
+
+# List of channel IDs where the bot is allowed to respond
+allowed_channels: []
+
+# Timezone for bot operations (e.g., America/New_York, Europe/London, Asia/Tokyo)
+timezone: UTC
+
+# Discord bot activity status message
+discord_activity: Surfing

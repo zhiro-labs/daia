@@ -320,6 +320,7 @@ dependencies = [
     { name = "pillow" },
     { name = "pocketflow" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
     { name = "requests" },
 ]
 
@@ -341,6 +342,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.3.0" },
     { name = "pocketflow", specifier = ">=0.0.3" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "requests", specifier = ">=2.32.5" },
 ]
 
