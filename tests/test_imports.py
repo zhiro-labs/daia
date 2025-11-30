@@ -41,7 +41,23 @@ def test_import_utils():
 
 def test_import_llm_router():
     """Test that LLM router can be imported."""
-    from utils.llm_router import call_llm, get_supported_providers
+    from utils.llm_router import LLMConfig, call_llm, get_supported_providers
 
+    assert LLMConfig is not None
     assert call_llm is not None
     assert get_supported_providers is not None
+
+
+def test_import_llm_service():
+    """Test that LLM service can be imported."""
+    from services import (
+        get_chat_config,
+        get_router_config,
+        get_thinker_config,
+        init_llm_configs,
+    )
+
+    assert init_llm_configs is not None
+    assert get_chat_config is not None
+    assert get_router_config is not None
+    assert get_thinker_config is not None

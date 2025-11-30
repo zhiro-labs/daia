@@ -55,32 +55,22 @@ class TestContextualSystemPrompt:
 class TestLLMChat:
     """Tests for LLMChat node."""
 
-    def test_init_gemini(self):
-        """Test LLMChat initialization with Gemini provider."""
+    def test_init_with_config(self):
+        """Test LLMChat initialization with LLMConfig."""
+        from utils import LLMConfig
+
         mock_client = MagicMock()
-        node = LLMChat(
-            mock_client,
-            chat_model="gemini-2.0-flash-exp",
-            temperature="0.7",
-            genai_tools=None,
+        config = LLMConfig(
+            client=mock_client,
+            model="gemini-2.0-flash-exp",
+            temperature=0.7,
             provider="gemini",
         )
-        assert node.genai_client == mock_client
-        assert node.chat_model == "gemini-2.0-flash-exp"
-        assert node.temperature == "0.7"
-        assert node.provider == "gemini"
-
-    def test_init_openai(self):
-        """Test LLMChat initialization with OpenAI provider."""
-        mock_client = MagicMock()
-        node = LLMChat(
-            mock_client,
-            chat_model="gpt-4",
-            temperature="0.7",
-            genai_tools=None,
-            provider="openai",
-        )
-        assert node.provider == "openai"
+        node = LLMChat(config=config)
+        assert node.config.client == mock_client
+        assert node.config.model == "gemini-2.0-flash-exp"
+        assert node.config.temperature == 0.7
+        assert node.config.provider == "gemini"
 
 
 class TestMarkdownTableExtractor:
