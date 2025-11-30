@@ -22,10 +22,10 @@ These are set in a `.env` file in the project root:
 
 ## Runtime Configuration (`config/runtime.yml`)
 
-These settings can be modified at runtime and are stored in `config/runtime.yml`:
+These settings can be modified at runtime and are stored in `config/runtime.yml`. Most can also be configured via slash commands (requires administrator permissions):
 
-- `allowed_channels`: A list of channel IDs where the bot is allowed to respond without being mentioned. If empty, the bot will only respond to direct messages and mentions.
-- `allowed_users`: A list of user IDs allowed to DM the bot.
-- `timezone`: The timezone for bot operations. Uses [IANA timezone names](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g., "America/New_York", "Europe/London", "Asia/Tokyo"). Defaults to "UTC". This affects how timestamps are displayed in the bot's contextual awareness. Can be changed via `/settimezone` command.
-- `discord_activity`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music"). Can be changed via `/setactivity` command.
-- `history_limit`: The maximum number of messages to fetch from the channel history. Defaults to 12. Can be changed via `/sethistorylimit` command.
+- `allowed_channels`: A list of channel IDs where the bot is allowed to respond without being mentioned. If empty, the bot will only respond to direct messages and mentions. Use `/addchannel`, `/removechannel`, `/listchannels` to manage.
+- `allowed_users`: A list of user IDs allowed to DM the bot. Use `/adduser`, `/removeuser`, `/listusers` to manage.
+- `timezone`: The timezone for bot operations. Uses [IANA timezone names](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g., "America/New_York", "Europe/London", "Asia/Tokyo"). Defaults to "UTC". This affects how timestamps are displayed in the bot's contextual awareness. Use `/settimezone` to change.
+- `discord_activity`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music"). Use `/setactivity` to change.
+- `history_limit`: The maximum number of messages to fetch from the channel history. Defaults to 12. Use `/sethistorylimit` to change.
