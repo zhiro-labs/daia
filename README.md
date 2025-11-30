@@ -9,7 +9,7 @@
     <a href="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml"><img src="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml/badge.svg" alt="Cross-Platform Tests"></a>
 </p>
 
-Daia (Discord AI Agent) is an intelligent Discord bot powered by Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
+Daia (Discord AI Agent) is an intelligent Discord bot optimized for Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
 
 ## Features
 
@@ -59,9 +59,11 @@ This project requires Python 3.12+. `uv` will gracefully handle the Python versi
       ```bash
       cp .env.example .env
       cp config/chat_sys_prompt.txt.example config/chat_sys_prompt.txt
+      cp config/runtime.yml.example config/runtime.yml
       ```
     - Edit the `.env` file to add your Discord bot token and Gemini API key.
     - Edit `config/chat_sys_prompt.txt` to customize the bot's personality and instructions.
+    - Edit `config/runtime.yml` to configure runtime settings and behavior.
 
 4.  **Run the bot:**
     ```bash
@@ -94,18 +96,29 @@ When inviting the bot to your server, ensure it has the following permissions:
 
 ## Configuration
 
-Daia is configured using environment variables. These can be set in a `.env` file in the project root.
+Daia uses two configuration files:
+
+### Environment Variables (`.env`)
+
+These are set in a `.env` file in the project root:
 
 - `DISCORD_BOT_TOKEN`: Your Discord bot token. **(Required)**
-- `DISCORD_BOT_ACTIVITY`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music"). Optional.
-- `ALLOWED_CHANNELS`: A comma-separated list of channel IDs where the bot is allowed to respond without being mentioned. If this is not set, the bot will only respond to direct messages and mentions.
-- `HISTORY_LIMIT`: The maximum number of messages to fetch from the channel history. **(Required)**
-- `GEMINI_API_KEY`: Your Google Gemini API key. **(Required)**
+- `CHAT_MODEL_API_KEY`: Your Google Gemini API key. **(Required)**
 - `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro"). **(Required)**
 - `CHAT_TEMPERATURE`: Controls the randomness of Gemini's responses (range: 0.0–2.0). **(Required)**
 - `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file. **(Required)**
 - `ENABLE_CONTEXTUAL_SYSTEM_PROMPT`: Set to `on` to enable the contextual system prompt, which allows the bot to recognize and address users by their display name. The recommended setting is `on` (as set in `.env.example`). If the variable is not set, it defaults to `off`.
-- `LLM_PROVIDER`: The LLM provider to use. Currently supports `gemini`. Defaults to `gemini`.
+- `CHAT_MODEL_PROVIDER`: The LLM provider to use. Currently supports `gemini`. Defaults to `gemini`.
+
+### Runtime Configuration (`config/runtime.yml`)
+
+These settings can be modified at runtime and are stored in `config/runtime.yml`:
+
+- `allowed_channels`: A list of channel IDs where the bot is allowed to respond without being mentioned. If empty, the bot will only respond to direct messages and mentions.
+- `allowed_users`: A list of user IDs allowed to DM the bot.
+- `timezone`: The timezone for bot operations (e.g., "America/New_York", "Europe/London", "Asia/Tokyo"). Defaults to "UTC".
+- `discord_activity`: The activity status displayed for the bot (e.g., "Surfing", "Listening to music").
+- `history_limit`: The maximum number of messages to fetch from the channel history. Defaults to 12. Can be changed via `/sethistorylimit` command.
 
 ## Usage
 
@@ -120,6 +133,22 @@ Daia is designed for easy interaction. Here's how you can use its features:
 
 - **Start a New Chat Session**: To start a fresh conversation and clear the context, use the `/newchat` slash command. This will make the bot forget the previous conversation history in that channel.
 
+- **Channel Management** (Administrator only): Control which channels the bot can respond to without being mentioned:
+  - `/addchannel`: Add the current channel to the bot's allowed list. The bot will respond to all messages in this channel.
+  - `/removechannel`: Remove the current channel from the bot's allowed list. The bot will only respond when mentioned.
+  - `/listchannels`: View all channels currently in the allowed list.
+
+- **User Management** (Administrator only): Control which users can DM the bot:
+  - `/adduser <user>`: Add a user to the bot's allowed DM list. The bot will respond to DMs from this user.
+  - `/removeuser <user>`: Remove a user from the bot's allowed DM list. The bot will no longer respond to DMs from this user.
+  - `/listusers`: View all users currently in the allowed DM list.
+
+- **Configuration Management** (Administrator only):
+  - `/refreshmetadata`: Refresh all channel and user names in the configuration file. Useful when channels or users have been renamed.
+  - `/sethistorylimit <limit>`: Set the number of messages to include in conversation history. This controls how much context the bot remembers from previous messages.
+  - `/settimezone <timezone>`: Set the bot's timezone for timestamps. Supports IANA timezone names (e.g., "America/New_York", "Europe/London", "Asia/Tokyo"). Features autocomplete to help you find the right timezone.
+  - `/setactivity <activity>`: Set the bot's Discord activity status message (e.g., "Surfing", "Listening to music").
+
 - **Automatic Table Rendering**: When Daia's response contains a markdown table, it will automatically be rendered as an image for better readability. This feature works automatically without any specific commands.
 
 - **Google Search**: If you ask a question that requires up-to-date information, Daia will automatically use its Google Search tool to find the answer.
@@ -130,9 +159,12 @@ Daia is designed for easy interaction. Here's how you can use its features:
 
 ### Setting Up Development Environment
 
-For development work, you'll need the development dependencies which include testing and linting tools:
+The `dev` branch contains the latest development progress. To start developing:
 
 ```bash
+# Clone the repository and switch to dev branch
+git checkout dev
+
 # Install all dependencies including dev tools
 uv sync --dev
 ```
@@ -231,14 +263,14 @@ If your CI fails or you encounter linting issues:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue.
+Contributions are welcome! Please submit pull requests to the `dev` branch. Feel free to open an issue for any bugs or feature requests.
 
 ## Todo
 
 ### Core Features
 
 - [ ] Reply message rearrange
-- [ ] Timezone setting
+- [x] Timezone setting
 - [ ] daia-ignore tag
 - [ ] Image processing
 - [ ] YouTube processing

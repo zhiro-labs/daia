@@ -2,9 +2,12 @@
 Contextual system prompt node for the async flow pipeline.
 """
 
-from datetime import UTC, datetime
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from pocketflow import AsyncNode
+
+from utils.runtime_config import runtime_config
 
 
 class ContextualSystemPrompt(AsyncNode):
@@ -18,10 +21,19 @@ class ContextualSystemPrompt(AsyncNode):
 
     async def prep_async(self, shared):
         print("📝 [ContextualSystemPrompt] Preparing contextual system prompt")
+        # Get timezone from runtime config
+        timezone_name = runtime_config.timezone
+        tz = ZoneInfo(timezone_name)
+        now = datetime.now(tz)
+
+        # Format: "Sunday, November 30, 2025 at 09:23 AM EST"
+        formatted_time = now.strftime("%A, %B %d, %Y at %I:%M %p %Z")
+
         return {
             "participants": shared.get("unique_users", set()),
             "author_name": shared.get("author_name", "User"),
-            "current_time": shared.get("created_at", datetime.now(UTC).isoformat()),
+            "current_time": formatted_time,
+            "timezone": timezone_name,
         }
 
     async def exec_async(self, prep_res):
@@ -55,7 +67,8 @@ Your goal is to provide human-like responses tailored to the conversation's cont
 Key information to use:
 - You are talking to a human named {prep_res["author_name"]}. Always address or reference them by this name if appropriate, unless they specify otherwise.
 - The conversation may involve one or more users. Current participants: {participants_str}.
-- Current time: {prep_res["current_time"]}.
+- Current time: {prep_res["current_time"]}
+- Timezone: {prep_res["timezone"]}
 """
 
         # Add contextual system prompt with clear labeling

@@ -7,6 +7,7 @@ from google import genai
 from google.genai import types
 from pocketflow import AsyncFlow
 
+from commands import setup_admin_commands, setup_chat_commands
 from nodes.contextual_system_prompt import ContextualSystemPrompt
 from nodes.fetch_history import FetchDiscordHistory
 from nodes.llm_chat import LLMChat
@@ -19,6 +20,7 @@ from utils import (
     create_message_data,
     download_noto_font,
     env_onoff_to_bool,
+    runtime_config,
     validate_message_data_types,
 )
 
@@ -26,26 +28,20 @@ from utils import (
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-DISCORD_BOT_ACTIVITY = os.getenv("DISCORD_BOT_ACTIVITY")
-# Parse comma-separated channel IDs from environment variable into a set of integers
-ALLOWED_CHANNELS = {
-    int(stripped)
-    for ch in os.getenv("ALLOWED_CHANNELS", "").split(",")
-    if (stripped := ch.strip()) and stripped.isdigit()
-}
-HISTORY_LIMIT = int(os.getenv("HISTORY_LIMIT"))
+# Use runtime config for dynamic values (can be changed via Discord commands)
+DISCORD_BOT_ACTIVITY = runtime_config.discord_activity
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+CHAT_MODEL_API_KEY = os.getenv("CHAT_MODEL_API_KEY")
 CHAT_MODEL = os.getenv("CHAT_MODEL")
 CHAT_TEMPERATURE = os.getenv("CHAT_TEMPERATURE")
 CHAT_SYS_PROMPT_PATH = os.getenv("CHAT_SYS_PROMPT_PATH")
 ENABLE_CONTEXTUAL_SYSTEM_PROMPT = env_onoff_to_bool(
     os.getenv("ENABLE_CONTEXTUAL_SYSTEM_PROMPT")
 )
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")  # Default to gemini
+CHAT_MODEL_PROVIDER = os.getenv("CHAT_MODEL_PROVIDER", "gemini")  # Default to gemini
 
 
-genai_client = genai.Client(api_key=GEMINI_API_KEY)
+genai_client = genai.Client(api_key=CHAT_MODEL_API_KEY)
 with open(CHAT_SYS_PROMPT_PATH, encoding="utf-8") as file:
     genai_chat_system_prompt = file.read()
 genai_tools = types.Tool(google_search=types.GoogleSearch())
@@ -85,13 +81,19 @@ if not check_font_exists():
 async def create_message_flow():
     print("🏗️ [create_message_flow] Creating flow nodes...")
     # Create nodes
-    fetch_history = FetchDiscordHistory(bot, HISTORY_LIMIT)
+    fetch_history = FetchDiscordHistory(bot, runtime_config.history_limit)
     process_history = ProcessMessageHistory()
     contextual_system_prompt = ContextualSystemPrompt(
-        ENABLE_CONTEXTUAL_SYSTEM_PROMPT, genai_chat_system_prompt, HISTORY_LIMIT
+        ENABLE_CONTEXTUAL_SYSTEM_PROMPT,
+        genai_chat_system_prompt,
+        runtime_config.history_limit,
     )
     llm_chat = LLMChat(
-        genai_client, CHAT_MODEL, CHAT_TEMPERATURE, genai_tools, provider=LLM_PROVIDER
+        genai_client,
+        CHAT_MODEL,
+        CHAT_TEMPERATURE,
+        genai_tools,
+        provider=CHAT_MODEL_PROVIDER,
     )
     table_extractor = MarkdownTableExtractor()
     table_renderer = TableImageRenderer()
@@ -121,29 +123,16 @@ async def on_ready():
     print(f"🤖 Bot ID: {bot.user.id}")
     print(f"🔧 Connected to {len(bot.guilds)} guilds")
 
+    # Setup slash commands
+    setup_chat_commands(bot)
+    setup_admin_commands(bot, runtime_config)
+
     # Sync slash commands
     try:
         synced = await bot.tree.sync()
         print(f"✅ Synced {len(synced)} command(s)")
     except Exception as e:
         print(f"❌ Failed to sync commands: {e}")
-
-
-@bot.tree.command(
-    name="newchat", description="Start a new chat session by sending a marker"
-)
-async def newchat(interaction: discord.Interaction):
-    """Slash command to send a new chat marker"""
-    try:
-        await interaction.response.send_message("[new chat] ---", ephemeral=False)
-        print(
-            f"✅ [newchat] New chat marker sent in {interaction.channel.name if hasattr(interaction.channel, 'name') else 'DM'}"
-        )
-    except Exception as e:
-        print(f"❌ [newchat] Error sending new chat marker: {e}")
-        await interaction.response.send_message(
-            "Failed to send new chat marker.", ephemeral=True
-        )
 
 
 @bot.event
@@ -159,19 +148,24 @@ async def on_message(message: discord.Message):
         print("🚫 [on_message] Ignoring own message")
         return
 
-    # Only respond to messages that mention the bot or are direct messages
-    is_mentioned = bot.user.mentioned_in(message)
+    # Only respond to messages that mention the bot, are in allowed channels, or are from allowed DM users
     is_dm = isinstance(message.channel, discord.DMChannel)
-    is_in_allowed_channel = message.channel.id in ALLOWED_CHANNELS
+    is_allowed_dm_user = message.author.id in runtime_config.allowed_users
+    is_in_allowed_channel = message.channel.id in runtime_config.allowed_channels
+    is_mentioned = bot.user.mentioned_in(message)
 
-    print(
-        f"🔍 [on_message] Bot mentioned: {is_mentioned}, Is DM: {is_dm}, Is in allowed channel: {is_in_allowed_channel}"
+    # For DMs, user must be in allowed list regardless of mention
+    # For channels, respond if mentioned or in allowed channel
+    should_respond = (is_dm and is_allowed_dm_user) or (
+        not is_dm and (is_mentioned or is_in_allowed_channel)
     )
 
-    if not (is_mentioned or is_dm or is_in_allowed_channel):
-        print(
-            "🚫 [on_message] Not mentioned, not DM, and not in allowed channel - ignoring"
-        )
+    print(
+        f"🔍 [on_message] Is DM: {is_dm}, Is allowed DM user: {is_allowed_dm_user}, Is in allowed channel: {is_in_allowed_channel}, Bot mentioned: {is_mentioned}, Should respond: {should_respond}"
+    )
+
+    if not should_respond:
+        print("🚫 [on_message] Ignoring message - does not meet response criteria")
         return
 
     print("✅ [on_message] Processing message...")
@@ -216,11 +210,11 @@ async def on_message(message: discord.Message):
 def main():
     print("🚀 Hello from daia!")
     print(f"🔑 Discord token loaded: {'✅' if DISCORD_BOT_TOKEN else '❌'}")
-    print(f"🔑 Gemini API key loaded: {'✅' if GEMINI_API_KEY else '❌'}")
+    print(f"🔑 Gemini API key loaded: {'✅' if CHAT_MODEL_API_KEY else '❌'}")
     print(f"🤖 Chat model: {CHAT_MODEL}")
     print(f"🌡️ Chat temperature: {CHAT_TEMPERATURE}")
     print(f"📄 Chat system prompt path: {CHAT_SYS_PROMPT_PATH}")
-    print(f"🔌 LLM Provider: {LLM_PROVIDER}")
+    print(f"🔌 LLM Provider: {CHAT_MODEL_PROVIDER}")
     print(f"🔌 Contextual system prompt: {ENABLE_CONTEXTUAL_SYSTEM_PROMPT}")
     print("🔌 Starting Discord bot...")
     bot.run(DISCORD_BOT_TOKEN)

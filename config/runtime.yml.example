@@ -1,0 +1,29 @@
+# Runtime configuration - can be modified via Discord commands
+# This file is auto-generated and will be updated by the bot
+
+# List of channel IDs where the bot is allowed to respond
+allowed_channels:
+  []
+  # Example with channels:
+  # - 123456789012345678  # My Server / #general
+  # - 987654321098765432  # Another Server / #bot-commands
+
+# List of user IDs allowed to DM the bot
+allowed_users:
+  []
+  # Example with users:
+  # - 111222333444555666  # username#1234
+  # - 777888999000111222  # anotheruser
+
+# Metadata for human-readable comments (auto-managed)
+channel_metadata:
+  {}
+
+user_metadata:
+  {}
+
+# Timezone for bot operations
+timezone: UTC
+
+# Discord bot activity status message
+discord_activity: Surfing
