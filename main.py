@@ -196,9 +196,7 @@ async def removechannel(interaction: discord.Interaction):
                 f"ℹ️ {interaction.channel.mention} was not in the allowed list",
                 ephemeral=True,
             )
-            print(
-                f"ℹ️ [removechannel] Channel {channel_id} not found in allowed list"
-            )
+            print(f"ℹ️ [removechannel] Channel {channel_id} not found in allowed list")
     except Exception as e:
         print(f"❌ [removechannel] Error removing channel: {e}")
         await interaction.response.send_message(
