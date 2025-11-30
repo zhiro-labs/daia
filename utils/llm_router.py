@@ -48,38 +48,19 @@ PROVIDERS = {
 
 async def call_llm(
     prompt: str,
-    config: LLMConfig = None,
+    config: LLMConfig,
     history: list = None,
-    # Legacy kwargs support for backward compatibility
-    provider: str = None,
-    **kwargs,
 ) -> str:
     """Unified LLM call interface
 
     Args:
         prompt: Input prompt
-        config: LLMConfig instance (preferred)
+        config: LLMConfig instance
         history: Chat history (optional)
-        provider: Legacy provider string (deprecated, use config instead)
-        **kwargs: Legacy kwargs (deprecated, use config instead)
 
     Returns:
         Response from the LLM
     """
-    # Support legacy call pattern for backward compatibility
-    if config is None:
-        if provider is None:
-            provider = "gemini"
-        config = LLMConfig(
-            client=kwargs.get("client"),
-            model=kwargs.get("model", "gemini-1.5-flash"),
-            temperature=kwargs.get("temperature", 1.0),
-            provider=provider,
-            system_prompt=kwargs.get("system_prompt", ""),
-            tools=kwargs.get("tools", []),
-        )
-        history = kwargs.get("history", history)
-
     if config.provider not in PROVIDERS:
         raise ValueError(
             f"Unsupported provider: {config.provider}. "

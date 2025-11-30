@@ -3,7 +3,6 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from google import genai
 from google.genai import types
 from pocketflow import AsyncFlow
 
@@ -15,7 +14,9 @@ from nodes.process_history import ProcessMessageHistory
 from nodes.send_response import SendDiscordResponse
 from nodes.table_extractor import MarkdownTableExtractor
 from nodes.table_renderer import TableImageRenderer
+from services import get_chat_config, init_llm_configs
 from utils import (
+    LLMConfig,
     check_font_exists,
     create_message_data,
     download_noto_font,
@@ -31,20 +32,20 @@ DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 # Use runtime config for dynamic values (can be changed via Discord commands)
 DISCORD_BOT_ACTIVITY = runtime_config.discord_activity
 
-CHAT_MODEL_API_KEY = os.getenv("CHAT_MODEL_API_KEY")
-CHAT_MODEL = os.getenv("CHAT_MODEL")
-CHAT_TEMPERATURE = os.getenv("CHAT_TEMPERATURE")
 CHAT_SYS_PROMPT_PATH = os.getenv("CHAT_SYS_PROMPT_PATH")
 ENABLE_CONTEXTUAL_SYSTEM_PROMPT = env_onoff_to_bool(
     os.getenv("ENABLE_CONTEXTUAL_SYSTEM_PROMPT")
 )
-CHAT_MODEL_PROVIDER = os.getenv("CHAT_MODEL_PROVIDER", "gemini")  # Default to gemini
 
-
-genai_client = genai.Client(api_key=CHAT_MODEL_API_KEY)
 with open(CHAT_SYS_PROMPT_PATH, encoding="utf-8") as file:
     genai_chat_system_prompt = file.read()
 genai_tools = types.Tool(google_search=types.GoogleSearch())
+
+# Initialize all LLM configurations
+init_llm_configs(
+    chat_system_prompt=genai_chat_system_prompt,
+    chat_tools=[genai_tools],
+)
 
 # Discord intents
 intents = discord.Intents.default()
@@ -88,13 +89,7 @@ async def create_message_flow():
         genai_chat_system_prompt,
         runtime_config.history_limit,
     )
-    llm_chat = LLMChat(
-        genai_client,
-        CHAT_MODEL,
-        CHAT_TEMPERATURE,
-        genai_tools,
-        provider=CHAT_MODEL_PROVIDER,
-    )
+    llm_chat = LLMChat(config=get_chat_config())
     table_extractor = MarkdownTableExtractor()
     table_renderer = TableImageRenderer()
     send_response = SendDiscordResponse(bot)
@@ -210,11 +205,13 @@ async def on_message(message: discord.Message):
 def main():
     print("🚀 Hello from daia!")
     print(f"🔑 Discord token loaded: {'✅' if DISCORD_BOT_TOKEN else '❌'}")
-    print(f"🔑 Gemini API key loaded: {'✅' if CHAT_MODEL_API_KEY else '❌'}")
-    print(f"🤖 Chat model: {CHAT_MODEL}")
-    print(f"🌡️ Chat temperature: {CHAT_TEMPERATURE}")
+    chat_config = get_chat_config()
+    print(f"🔑 Chat API key loaded: {'✅' if chat_config else '❌'}")
+    if chat_config:
+        print(f"🤖 Chat model: {chat_config.model}")
+        print(f"🌡️ Chat temperature: {chat_config.temperature}")
+        print(f"🔌 LLM Provider: {chat_config.provider}")
     print(f"📄 Chat system prompt path: {CHAT_SYS_PROMPT_PATH}")
-    print(f"🔌 LLM Provider: {CHAT_MODEL_PROVIDER}")
     print(f"🔌 Contextual system prompt: {ENABLE_CONTEXTUAL_SYSTEM_PROMPT}")
     print("🔌 Starting Discord bot...")
     bot.run(DISCORD_BOT_TOKEN)
