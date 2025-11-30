@@ -268,7 +268,7 @@ Contributions are welcome! Please submit pull requests to the `dev` branch. Feel
 ### Core Features
 
 - [ ] Reply message rearrange
-- [ ] Timezone setting
+- [x] Timezone setting
 - [ ] daia-ignore tag
 - [ ] Image processing
 - [ ] YouTube processing

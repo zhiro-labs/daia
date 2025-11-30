@@ -2,6 +2,7 @@
 
 import discord
 from discord.ext import commands
+from zoneinfo import available_timezones
 
 
 def setup_admin_commands(bot: commands.Bot, runtime_config):
@@ -408,4 +409,50 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
             print(f"❌ [setactivity] Error setting activity: {e}")
             await interaction.response.send_message(
                 "Failed to set activity status.", ephemeral=True
+            )
+
+    async def timezone_autocomplete(
+        interaction: discord.Interaction, current: str
+    ) -> list[discord.app_commands.Choice[str]]:
+        """Autocomplete for timezone selection"""
+        timezones = sorted(available_timezones())
+        # Filter timezones based on current input
+        filtered = [tz for tz in timezones if current.lower() in tz.lower()][:25]
+        return [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
+
+    @bot.tree.command(
+        name="settimezone",
+        description="Set the bot's timezone for timestamps",
+    )
+    @discord.app_commands.autocomplete(timezone=timezone_autocomplete)
+    @commands.has_permissions(administrator=True)
+    async def settimezone(interaction: discord.Interaction, timezone: str):
+        """Slash command to set timezone"""
+        try:
+            # Check if command is used in a server
+            if not interaction.guild:
+                await interaction.response.send_message(
+                    "❌ This command can only be used in a server, not in DMs.",
+                    ephemeral=True,
+                )
+                return
+
+            # Validate timezone
+            if timezone not in available_timezones():
+                await interaction.response.send_message(
+                    f"❌ Invalid timezone: {timezone}",
+                    ephemeral=True,
+                )
+                return
+
+            runtime_config.set_timezone(timezone)
+            await interaction.response.send_message(
+                f"✅ Timezone set to: {timezone}",
+                ephemeral=True,
+            )
+            print(f"✅ [settimezone] Timezone updated to: {timezone}")
+        except Exception as e:
+            print(f"❌ [settimezone] Error setting timezone: {e}")
+            await interaction.response.send_message(
+                "Failed to set timezone.", ephemeral=True
             )
