@@ -13,6 +13,7 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "pyyaml>=6.0.2",
     "requests>=2.32.5",
+    "tzdata>=2025.2",
 ]
 
 [dependency-groups]

@@ -459,13 +459,25 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
         interaction: discord.Interaction, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         """Autocomplete for timezone selection"""
-        if not current:
-            # Show first 25 alphabetically when no input
-            return [
-                discord.app_commands.Choice(name=tz, value=tz) for tz in TIMEZONES[:25]
-            ]
+        print(f"🔍 [timezone_autocomplete] Called with: '{current}'")
+        try:
+            if not current:
+                # Show first 25 alphabetically when no input
+                results = [
+                    discord.app_commands.Choice(name=tz, value=tz)
+                    for tz in TIMEZONES[:25]
+                ]
+                print(f"🔍 [timezone_autocomplete] Returning {len(results)} default results")
+                return results
 
-        # Fast search using pre-computed lowercase list
-        query = current.lower()
-        filtered = [tz for tz_lower, tz in TIMEZONES_LOWER if query in tz_lower][:25]
-        return [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
+            # Fast search using pre-computed lowercase list
+            query = current.lower()
+            filtered = [tz for tz_lower, tz in TIMEZONES_LOWER if query in tz_lower][
+                :25
+            ]
+            results = [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
+            print(f"🔍 [timezone_autocomplete] Query '{current}' returned {len(results)} results")
+            return results
+        except Exception as e:
+            print(f"❌ [timezone_autocomplete] Error: {e}")
+            return []
