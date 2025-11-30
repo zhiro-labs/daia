@@ -2,36 +2,7 @@
 LLM Router utility for supporting multiple AI providers.
 """
 
-import openai
 from google.genai import types
-
-
-async def _call_openai(prompt: str, **kwargs) -> str:
-    """Call OpenAI API"""
-    client = kwargs.get("client")
-    model = kwargs.get("model", "gpt-3.5-turbo")
-    temperature = kwargs.get("temperature", 0.7)
-    system_prompt = kwargs.get("system_prompt", "")
-    history = kwargs.get("history", [])
-
-    if not client:
-        raise ValueError("OpenAI client is required")
-
-    messages = []
-    if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-
-    # Add history messages
-    messages.extend(history)
-
-    # Add current prompt
-    messages.append({"role": "user", "content": prompt})
-
-    response = await client.chat.completions.create(
-        model=model, messages=messages, temperature=temperature
-    )
-
-    return response.choices[0].message.content
 
 
 async def _call_gemini(prompt: str, **kwargs) -> str:
@@ -60,48 +31,13 @@ async def _call_gemini(prompt: str, **kwargs) -> str:
     return response.text
 
 
-async def _call_openai_compatible(prompt: str, **kwargs) -> str:
-    """Call OpenAI-compatible API"""
-    # This can be used for providers like Anthropic, Cohere, etc.
-    # that follow OpenAI's API format
-    base_url = kwargs.get("base_url")
-    api_key = kwargs.get("api_key")
-    model = kwargs.get("model", "gpt-5")
-    temperature = kwargs.get("temperature", 0.7)
-    system_prompt = kwargs.get("system_prompt", "")
-    history = kwargs.get("history", [])
-
-    if not base_url or not api_key:
-        raise ValueError("base_url and api_key are required for OpenAI-compatible API")
-
-    client = openai.AsyncOpenAI(base_url=base_url, api_key=api_key)
-
-    messages = []
-    if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-
-    # Add history messages
-    messages.extend(history)
-
-    # Add current prompt
-    messages.append({"role": "user", "content": prompt})
-
-    response = await client.chat.completions.create(
-        model=model, messages=messages, temperature=temperature
-    )
-
-    return response.choices[0].message.content
-
-
 # Function mapping dictionary
 PROVIDERS = {
-    "openai": _call_openai,
     "gemini": _call_gemini,
-    "openai_compatible": _call_openai_compatible,
 }
 
 
-async def call_llm(prompt: str, provider: str = "openai", **kwargs) -> str:
+async def call_llm(prompt: str, provider: str = "gemini", **kwargs) -> str:
     """Call LLM with specified provider
 
     Args:
