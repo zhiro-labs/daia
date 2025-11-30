@@ -416,27 +416,11 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
                 "Failed to set activity status.", ephemeral=True
             )
 
-    async def timezone_autocomplete(
-        interaction: discord.Interaction, current: str
-    ) -> list[discord.app_commands.Choice[str]]:
-        """Autocomplete for timezone selection"""
-        if not current:
-            # Show first 25 alphabetically when no input
-            return [
-                discord.app_commands.Choice(name=tz, value=tz) for tz in TIMEZONES[:25]
-            ]
-
-        # Fast search using pre-computed lowercase list
-        query = current.lower()
-        filtered = [tz for tz_lower, tz in TIMEZONES_LOWER if query in tz_lower][:25]
-        return [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
-
     @bot.tree.command(
         name="settimezone",
         description="Set the bot's timezone for timestamps",
     )
     @discord.app_commands.describe(timezone="The timezone to set (e.g., Asia/Tokyo)")
-    @discord.app_commands.autocomplete(timezone=timezone_autocomplete)
     @discord.app_commands.checks.has_permissions(administrator=True)
     async def settimezone(interaction: discord.Interaction, timezone: str):
         """Slash command to set timezone"""
@@ -468,3 +452,20 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
             await interaction.response.send_message(
                 "Failed to set timezone.", ephemeral=True
             )
+
+    # Register autocomplete for settimezone after command is defined
+    @settimezone.autocomplete("timezone")
+    async def timezone_autocomplete(
+        interaction: discord.Interaction, current: str
+    ) -> list[discord.app_commands.Choice[str]]:
+        """Autocomplete for timezone selection"""
+        if not current:
+            # Show first 25 alphabetically when no input
+            return [
+                discord.app_commands.Choice(name=tz, value=tz) for tz in TIMEZONES[:25]
+            ]
+
+        # Fast search using pre-computed lowercase list
+        query = current.lower()
+        filtered = [tz for tz_lower, tz in TIMEZONES_LOWER if query in tz_lower][:25]
+        return [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
