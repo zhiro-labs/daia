@@ -380,3 +380,46 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
             await interaction.response.send_message(
                 "Failed to set history limit.", ephemeral=True
             )
+
+    @bot.tree.command(
+        name="setactivity",
+        description="Set the bot's Discord activity status message",
+    )
+    @commands.has_permissions(administrator=True)
+    async def setactivity(interaction: discord.Interaction, activity: str):
+        """Slash command to set Discord activity status"""
+        try:
+            # Check if command is used in a server
+            if not interaction.guild:
+                await interaction.response.send_message(
+                    "❌ This command can only be used in a server, not in DMs.",
+                    ephemeral=True,
+                )
+                return
+
+            # Validate activity length
+            if len(activity) > 128:
+                await interaction.response.send_message(
+                    "❌ Activity message is too long (max 128 characters).",
+                    ephemeral=True,
+                )
+                return
+
+            runtime_config.set_discord_activity(activity)
+
+            # Update bot's activity in real-time
+            custom_activity = discord.CustomActivity(name=activity)
+            await bot.change_presence(
+                activity=custom_activity, status=discord.Status.online
+            )
+
+            await interaction.response.send_message(
+                f"✅ Bot activity updated to: {activity}",
+                ephemeral=True,
+            )
+            print(f"✅ [setactivity] Activity updated to: {activity}")
+        except Exception as e:
+            print(f"❌ [setactivity] Error setting activity: {e}")
+            await interaction.response.send_message(
+                "Failed to set activity status.", ephemeral=True
+            )
