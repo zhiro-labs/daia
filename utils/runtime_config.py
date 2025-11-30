@@ -5,7 +5,6 @@ Provides thread-safe access to dynamically editable configuration values.
 
 from pathlib import Path
 from threading import Lock
-from typing import Set
 
 import yaml
 
@@ -116,12 +115,12 @@ class RuntimeConfig:
             f.writelines(lines)
 
     @property
-    def allowed_channels(self) -> Set[int]:
+    def allowed_channels(self) -> set[int]:
         """Get allowed channels as a set of integers (cached, no I/O)."""
         return set(self._cache.get("allowed_channels", []))
 
     @property
-    def allowed_users(self) -> Set[int]:
+    def allowed_users(self) -> set[int]:
         """Get allowed users for DMs as a set of integers (cached, no I/O)."""
         return set(self._cache.get("allowed_users", []))
 

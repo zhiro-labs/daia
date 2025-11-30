@@ -464,7 +464,7 @@ async def refreshmetadata(interaction: discord.Interaction):
             await interaction.followup.send(
                 "Failed to refresh metadata.", ephemeral=True
             )
-        except:
+        except Exception:
             await interaction.response.send_message(
                 "Failed to refresh metadata.", ephemeral=True
             )
