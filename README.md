@@ -282,7 +282,7 @@ Contributions are welcome! Please submit pull requests to the `dev` branch. Feel
 
 - [ ] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm) support
 - [ ] MCP support
-- [ ] OpenAI support
+- ~~[ ] OpenAI support~~
 - [ ] OpenAI compatible support
 - [ ] Database support
 - [ ] Long-term memory
