@@ -137,6 +137,14 @@ Daia is designed for easy interaction. Here's how you can use its features:
   - `/removechannel`: Remove the current channel from the bot's allowed list. The bot will only respond when mentioned.
   - `/listchannels`: View all channels currently in the allowed list.
 
+- **User Management** (Administrator only): Control which users can DM the bot:
+  - `/adduser <user>`: Add a user to the bot's allowed DM list. The bot will respond to DMs from this user.
+  - `/removeuser <user>`: Remove a user from the bot's allowed DM list. The bot will no longer respond to DMs from this user.
+  - `/listusers`: View all users currently in the allowed DM list.
+
+- **Configuration Management** (Administrator only):
+  - `/refreshmetadata`: Refresh all channel and user names in the configuration file. Useful when channels or users have been renamed.
+
 - **Automatic Table Rendering**: When Daia's response contains a markdown table, it will automatically be rendered as an image for better readability. This feature works automatically without any specific commands.
 
 - **Google Search**: If you ask a question that requires up-to-date information, Daia will automatically use its Google Search tool to find the answer.
