@@ -46,6 +46,8 @@ Control which users can DM the bot:
 
 - `/refreshmetadata`: Refresh all channel and user names in the configuration file. Useful when channels or users have been renamed.
 - `/sethistorylimit <limit>`: Set the number of messages to include in conversation history. This controls how much context the bot remembers from previous messages.
+- `/settimezone <timezone>`: Set the bot's timezone for timestamps. Supports IANA timezone names (e.g., "America/New_York", "Europe/London", "Asia/Tokyo"). Features autocomplete to help you find the right timezone.
+- `/setactivity <activity>`: Set the bot's Discord activity status message (e.g., "Surfing", "Listening to music").
 
 ## Automatic Features
 
