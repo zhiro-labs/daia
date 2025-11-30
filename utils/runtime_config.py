@@ -258,6 +258,48 @@ class RuntimeConfig:
         with self._lock:
             self._load()
 
+    def update_channel_metadata(
+        self, channel_id: int, server_name: str, channel_name: str
+    ):
+        """Update metadata for a specific channel without modifying allowed list."""
+        with self._lock:
+            metadata = self._cache.get("channel_metadata", {})
+            metadata[str(channel_id)] = {"server": server_name, "channel": channel_name}
+            self._cache["channel_metadata"] = metadata
+            self._save()
+
+    def update_user_metadata(self, user_id: int, username: str):
+        """Update metadata for a specific user without modifying allowed list."""
+        with self._lock:
+            metadata = self._cache.get("user_metadata", {})
+            metadata[str(user_id)] = {"username": username}
+            self._cache["user_metadata"] = metadata
+            self._save()
+
+    def batch_update_metadata(self, channels: dict = None, users: dict = None):
+        """
+        Efficiently update multiple channel and user metadata in one operation.
+
+        Args:
+            channels: Dict of {channel_id: {"server": name, "channel": name}}
+            users: Dict of {user_id: {"username": name}}
+        """
+        with self._lock:
+            if channels:
+                channel_metadata = self._cache.get("channel_metadata", {})
+                for channel_id, data in channels.items():
+                    channel_metadata[str(channel_id)] = data
+                self._cache["channel_metadata"] = channel_metadata
+
+            if users:
+                user_metadata = self._cache.get("user_metadata", {})
+                for user_id, data in users.items():
+                    user_metadata[str(user_id)] = data
+                self._cache["user_metadata"] = user_metadata
+
+            # Only save once after all updates
+            self._save()
+
 
 # Global singleton instance
 runtime_config = RuntimeConfig()

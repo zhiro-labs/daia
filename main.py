@@ -400,6 +400,76 @@ async def listusers(interaction: discord.Interaction):
         )
 
 
+@bot.tree.command(
+    name="refreshmetadata",
+    description="Refresh all channel and user names in config comments",
+)
+@commands.has_permissions(administrator=True)
+async def refreshmetadata(interaction: discord.Interaction):
+    """Slash command to refresh all metadata for channels and users"""
+    try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
+        # Defer response since this might take a moment
+        await interaction.response.defer(ephemeral=True)
+
+        channel_updates = {}
+        user_updates = {}
+
+        # Collect channel metadata
+        for channel_id in runtime_config.allowed_channels:
+            channel = bot.get_channel(channel_id)
+            if channel and hasattr(channel, "guild"):
+                channel_updates[channel_id] = {
+                    "server": channel.guild.name,
+                    "channel": channel.name,
+                }
+
+        # Collect user metadata
+        for user_id in runtime_config.allowed_users:
+            try:
+                user = await bot.fetch_user(user_id)
+                if user:
+                    username = (
+                        f"{user.name}#{user.discriminator}"
+                        if user.discriminator != "0"
+                        else user.name
+                    )
+                    user_updates[user_id] = {"username": username}
+            except Exception as e:
+                print(f"⚠️ [refreshmetadata] Could not fetch user {user_id}: {e}")
+
+        # Batch update all metadata in one operation
+        runtime_config.batch_update_metadata(
+            channels=channel_updates if channel_updates else None,
+            users=user_updates if user_updates else None,
+        )
+
+        await interaction.followup.send(
+            f"✅ Refreshed metadata for {len(channel_updates)} channel(s) and {len(user_updates)} user(s)",
+            ephemeral=True,
+        )
+        print(
+            f"✅ [refreshmetadata] Updated {len(channel_updates)} channels and {len(user_updates)} users"
+        )
+    except Exception as e:
+        print(f"❌ [refreshmetadata] Error refreshing metadata: {e}")
+        try:
+            await interaction.followup.send(
+                "Failed to refresh metadata.", ephemeral=True
+            )
+        except:
+            await interaction.response.send_message(
+                "Failed to refresh metadata.", ephemeral=True
+            )
+
+
 @bot.event
 async def on_message(message: discord.Message):
     """Handle received messages with proper type validation"""
