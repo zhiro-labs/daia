@@ -5,6 +5,10 @@
 # Can be managed via slash commands: /addchannel, /removechannel, /listchannels (Admin only)
 allowed_channels: []
 
+# List of user IDs allowed to DM the bot
+# Can be managed via slash commands: /adduser, /removeuser, /listusers (Admin only)
+allowed_users: []
+
 # Timezone for bot operations (e.g., America/New_York, Europe/London, Asia/Tokyo)
 # Can be changed via slash command: /settimezone (Admin only)
 timezone: UTC
