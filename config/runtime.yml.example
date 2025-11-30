@@ -2,15 +2,27 @@
 # This file is auto-generated and will be updated by the bot
 
 # List of channel IDs where the bot is allowed to respond
-# Can be managed via slash commands: /addchannel, /removechannel, /listchannels (Admin only)
-allowed_channels: []
+allowed_channels:
+  []
+  # Example with channels:
+  # - 123456789012345678  # My Server / #general
+  # - 987654321098765432  # Another Server / #bot-commands
 
 # List of user IDs allowed to DM the bot
-# Can be managed via slash commands: /adduser, /removeuser, /listusers (Admin only)
-allowed_users: []
+allowed_users:
+  []
+  # Example with users:
+  # - 111222333444555666  # username#1234
+  # - 777888999000111222  # anotheruser
 
-# Timezone for bot operations (e.g., America/New_York, Europe/London, Asia/Tokyo)
-# Can be changed via slash command: /settimezone (Admin only)
+# Metadata for human-readable comments (auto-managed)
+channel_metadata:
+  {}
+
+user_metadata:
+  {}
+
+# Timezone for bot operations
 timezone: UTC
 
 # Discord bot activity status message

@@ -26,6 +26,8 @@ class RuntimeConfig:
             self._cache = {
                 "allowed_channels": [],
                 "allowed_users": [],
+                "channel_metadata": {},
+                "user_metadata": {},
                 "timezone": "UTC",
                 "discord_activity": "Surfing",
             }
@@ -33,12 +35,85 @@ class RuntimeConfig:
         else:
             with open(self.config_path, encoding="utf-8") as f:
                 self._cache = yaml.safe_load(f) or {}
+                # Ensure metadata dicts exist
+                if "channel_metadata" not in self._cache:
+                    self._cache["channel_metadata"] = {}
+                if "user_metadata" not in self._cache:
+                    self._cache["user_metadata"] = {}
 
     def _save(self):
-        """Save config to YAML file."""
+        """Save config to YAML file with inline comments."""
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Build YAML content with comments manually
+        lines = []
+        lines.append("# Runtime configuration - can be modified via Discord commands\n")
+        lines.append("# This file is auto-generated and will be updated by the bot\n\n")
+
+        # Allowed channels with comments
+        lines.append("# List of channel IDs where the bot is allowed to respond\n")
+        lines.append("allowed_channels:\n")
+        channels = self._cache.get("allowed_channels", [])
+        channel_metadata = self._cache.get("channel_metadata", {})
+        if not channels:
+            lines.append("  []\n")
+        else:
+            for channel_id in channels:
+                metadata = channel_metadata.get(str(channel_id), {})
+                server = metadata.get("server", "Unknown Server")
+                channel = metadata.get("channel", "Unknown Channel")
+                lines.append(f"  - {channel_id}  # {server} / #{channel}\n")
+
+        lines.append("\n")
+
+        # Allowed users with comments
+        lines.append("# List of user IDs allowed to DM the bot\n")
+        lines.append("allowed_users:\n")
+        users = self._cache.get("allowed_users", [])
+        user_metadata = self._cache.get("user_metadata", {})
+        if not users:
+            lines.append("  []\n")
+        else:
+            for user_id in users:
+                metadata = user_metadata.get(str(user_id), {})
+                username = metadata.get("username", "Unknown User")
+                lines.append(f"  - {user_id}  # {username}\n")
+
+        lines.append("\n")
+
+        # Metadata storage (hidden from main view)
+        lines.append("# Metadata for human-readable comments (auto-managed)\n")
+        lines.append("channel_metadata:\n")
+        if not channel_metadata:
+            lines.append("  {}\n")
+        else:
+            for channel_id, meta in channel_metadata.items():
+                lines.append(f"  '{channel_id}':\n")
+                lines.append(f"    server: {meta.get('server', 'Unknown')}\n")
+                lines.append(f"    channel: {meta.get('channel', 'Unknown')}\n")
+
+        lines.append("\n")
+        lines.append("user_metadata:\n")
+        if not user_metadata:
+            lines.append("  {}\n")
+        else:
+            for user_id, meta in user_metadata.items():
+                lines.append(f"  '{user_id}':\n")
+                lines.append(f"    username: {meta.get('username', 'Unknown')}\n")
+
+        lines.append("\n")
+
+        # Other settings
+        lines.append("# Timezone for bot operations\n")
+        lines.append(f"timezone: {self._cache.get('timezone', 'UTC')}\n\n")
+
+        lines.append("# Discord bot activity status message\n")
+        lines.append(
+            f"discord_activity: {self._cache.get('discord_activity', 'Surfing')}\n"
+        )
+
         with open(self.config_path, "w", encoding="utf-8") as f:
-            yaml.dump(self._cache, f, default_flow_style=False, allow_unicode=True)
+            f.writelines(lines)
 
     @property
     def allowed_channels(self) -> Set[int]:
@@ -60,24 +135,42 @@ class RuntimeConfig:
         """Get Discord bot activity status."""
         return self._cache.get("discord_activity", "Surfing")
 
-    def add_channel(self, channel_id: int) -> bool:
+    def add_channel(
+        self, channel_id: int, server_name: str = None, channel_name: str = None
+    ) -> bool:
         """
         Add a channel to allowed list.
 
         Args:
             channel_id: Discord channel ID to add
+            server_name: Name of the server (optional, for comments)
+            channel_name: Name of the channel (optional, for comments)
 
         Returns:
             bool: True if channel was added, False if already existed
         """
         with self._lock:
             channels = self._cache.get("allowed_channels", [])
+            metadata = self._cache.get("channel_metadata", {})
+
+            # Update metadata if provided (refreshes comments even if channel exists)
+            if server_name or channel_name:
+                metadata[str(channel_id)] = {
+                    "server": server_name or "Unknown Server",
+                    "channel": channel_name or "Unknown Channel",
+                }
+                self._cache["channel_metadata"] = metadata
+
             if channel_id not in channels:
                 channels.append(channel_id)
                 self._cache["allowed_channels"] = channels
                 self._save()
                 return True
-            return False
+            else:
+                # Channel already exists, but save if metadata was updated
+                if server_name or channel_name:
+                    self._save()
+                return False
 
     def remove_channel(self, channel_id: int) -> bool:
         """
@@ -98,24 +191,36 @@ class RuntimeConfig:
                 return True
             return False
 
-    def add_user(self, user_id: int) -> bool:
+    def add_user(self, user_id: int, username: str = None) -> bool:
         """
         Add a user to allowed DM list.
 
         Args:
             user_id: Discord user ID to add
+            username: Username (optional, for comments)
 
         Returns:
             bool: True if user was added, False if already existed
         """
         with self._lock:
             users = self._cache.get("allowed_users", [])
+            metadata = self._cache.get("user_metadata", {})
+
+            # Update metadata if provided (refreshes comments even if user exists)
+            if username:
+                metadata[str(user_id)] = {"username": username}
+                self._cache["user_metadata"] = metadata
+
             if user_id not in users:
                 users.append(user_id)
                 self._cache["allowed_users"] = users
                 self._save()
                 return True
-            return False
+            else:
+                # User already exists, but save if metadata was updated
+                if username:
+                    self._save()
+                return False
 
     def remove_user(self, user_id: int) -> bool:
         """

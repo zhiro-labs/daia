@@ -162,7 +162,13 @@ async def addchannel(interaction: discord.Interaction):
             return
 
         channel_id = interaction.channel.id
-        was_added = runtime_config.add_channel(channel_id)
+        server_name = interaction.guild.name if interaction.guild else "DM"
+        channel_name = (
+            interaction.channel.name
+            if hasattr(interaction.channel, "name")
+            else "Unknown"
+        )
+        was_added = runtime_config.add_channel(channel_id, server_name, channel_name)
 
         if was_added:
             await interaction.response.send_message(
@@ -289,7 +295,12 @@ async def adduser(interaction: discord.Interaction, user: discord.User):
             return
 
         user_id = user.id
-        was_added = runtime_config.add_user(user_id)
+        username = (
+            f"{user.name}#{user.discriminator}"
+            if user.discriminator != "0"
+            else user.name
+        )
+        was_added = runtime_config.add_user(user_id, username)
 
         if was_added:
             await interaction.response.send_message(
