@@ -214,7 +214,7 @@ async def listchannels(interaction: discord.Interaction):
         allowed = runtime_config.allowed_channels
         if not allowed:
             await interaction.response.send_message(
-                "ℹ️ No channels in allowed list. Bot will only respond to mentions and DMs.",
+                "ℹ️ No channels in allowed list. Bot will only respond to mentions.",
                 ephemeral=True,
             )
         else:
@@ -236,6 +236,96 @@ async def listchannels(interaction: discord.Interaction):
         )
 
 
+@bot.tree.command(name="adduser", description="Add a user to bot's allowed DM list")
+@commands.has_permissions(administrator=True)
+async def adduser(interaction: discord.Interaction, user: discord.User):
+    """Slash command to add user to allowed DM users"""
+    try:
+        user_id = user.id
+        was_added = runtime_config.add_user(user_id)
+
+        if was_added:
+            await interaction.response.send_message(
+                f"✅ Added {user.mention} to allowed DM users list",
+                ephemeral=True,
+            )
+            print(f"✅ [adduser] Added user {user_id} ({user.name}) to allowed list")
+        else:
+            await interaction.response.send_message(
+                f"ℹ️ {user.mention} is already in the allowed DM list",
+                ephemeral=True,
+            )
+            print(f"ℹ️ [adduser] User {user_id} ({user.name}) already in allowed list")
+    except Exception as e:
+        print(f"❌ [adduser] Error adding user: {e}")
+        await interaction.response.send_message(
+            "Failed to add user to allowed DM list.", ephemeral=True
+        )
+
+
+@bot.tree.command(
+    name="removeuser", description="Remove a user from bot's allowed DM list"
+)
+@commands.has_permissions(administrator=True)
+async def removeuser(interaction: discord.Interaction, user: discord.User):
+    """Slash command to remove user from allowed DM users"""
+    try:
+        user_id = user.id
+        was_removed = runtime_config.remove_user(user_id)
+
+        if was_removed:
+            await interaction.response.send_message(
+                f"✅ Removed {user.mention} from allowed DM users list",
+                ephemeral=True,
+            )
+            print(
+                f"✅ [removeuser] Removed user {user_id} ({user.name}) from allowed list"
+            )
+        else:
+            await interaction.response.send_message(
+                f"ℹ️ {user.mention} was not in the allowed DM list",
+                ephemeral=True,
+            )
+            print(
+                f"ℹ️ [removeuser] User {user_id} ({user.name}) not found in allowed list"
+            )
+    except Exception as e:
+        print(f"❌ [removeuser] Error removing user: {e}")
+        await interaction.response.send_message(
+            "Failed to remove user from allowed DM list.", ephemeral=True
+        )
+
+
+@bot.tree.command(name="listusers", description="List all users allowed to DM the bot")
+@commands.has_permissions(administrator=True)
+async def listusers(interaction: discord.Interaction):
+    """Slash command to list all allowed DM users"""
+    try:
+        allowed = runtime_config.allowed_users
+        if not allowed:
+            await interaction.response.send_message(
+                "ℹ️ No users in allowed DM list.",
+                ephemeral=True,
+            )
+        else:
+            user_mentions = []
+            for user_id in allowed:
+                user = await bot.fetch_user(user_id)
+                if user:
+                    user_mentions.append(f"• {user.mention} (ID: {user_id})")
+                else:
+                    user_mentions.append(f"• Unknown user (ID: {user_id})")
+
+            message = "**Allowed DM Users:**\n" + "\n".join(user_mentions)
+            await interaction.response.send_message(message, ephemeral=True)
+            print(f"✅ [listusers] Listed {len(allowed)} allowed users")
+    except Exception as e:
+        print(f"❌ [listusers] Error listing users: {e}")
+        await interaction.response.send_message(
+            "Failed to list allowed users.", ephemeral=True
+        )
+
+
 @bot.event
 async def on_message(message: discord.Message):
     """Handle received messages with proper type validation"""
@@ -249,19 +339,24 @@ async def on_message(message: discord.Message):
         print("🚫 [on_message] Ignoring own message")
         return
 
-    # Only respond to messages that mention the bot or are direct messages
-    is_mentioned = bot.user.mentioned_in(message)
+    # Only respond to messages that mention the bot, are in allowed channels, or are from allowed DM users
     is_dm = isinstance(message.channel, discord.DMChannel)
+    is_allowed_dm_user = message.author.id in runtime_config.allowed_users
     is_in_allowed_channel = message.channel.id in runtime_config.allowed_channels
+    is_mentioned = bot.user.mentioned_in(message)
 
-    print(
-        f"🔍 [on_message] Bot mentioned: {is_mentioned}, Is DM: {is_dm}, Is in allowed channel: {is_in_allowed_channel}"
+    # For DMs, user must be in allowed list regardless of mention
+    # For channels, respond if mentioned or in allowed channel
+    should_respond = (is_dm and is_allowed_dm_user) or (
+        not is_dm and (is_mentioned or is_in_allowed_channel)
     )
 
-    if not (is_mentioned or is_dm or is_in_allowed_channel):
-        print(
-            "🚫 [on_message] Not mentioned, not DM, and not in allowed channel - ignoring"
-        )
+    print(
+        f"🔍 [on_message] Is DM: {is_dm}, Is allowed DM user: {is_allowed_dm_user}, Is in allowed channel: {is_in_allowed_channel}, Bot mentioned: {is_mentioned}, Should respond: {should_respond}"
+    )
+
+    if not should_respond:
+        print("🚫 [on_message] Ignoring message - does not meet response criteria")
         return
 
     print("✅ [on_message] Processing message...")

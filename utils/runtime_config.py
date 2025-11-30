@@ -25,6 +25,7 @@ class RuntimeConfig:
             # Create default config if it doesn't exist
             self._cache = {
                 "allowed_channels": [],
+                "allowed_users": [],
                 "timezone": "UTC",
                 "discord_activity": "Surfing",
             }
@@ -43,6 +44,11 @@ class RuntimeConfig:
     def allowed_channels(self) -> Set[int]:
         """Get allowed channels as a set of integers (cached, no I/O)."""
         return set(self._cache.get("allowed_channels", []))
+
+    @property
+    def allowed_users(self) -> Set[int]:
+        """Get allowed users for DMs as a set of integers (cached, no I/O)."""
+        return set(self._cache.get("allowed_users", []))
 
     @property
     def timezone(self) -> str:
@@ -88,6 +94,44 @@ class RuntimeConfig:
             if channel_id in channels:
                 channels.remove(channel_id)
                 self._cache["allowed_channels"] = channels
+                self._save()
+                return True
+            return False
+
+    def add_user(self, user_id: int) -> bool:
+        """
+        Add a user to allowed DM list.
+
+        Args:
+            user_id: Discord user ID to add
+
+        Returns:
+            bool: True if user was added, False if already existed
+        """
+        with self._lock:
+            users = self._cache.get("allowed_users", [])
+            if user_id not in users:
+                users.append(user_id)
+                self._cache["allowed_users"] = users
+                self._save()
+                return True
+            return False
+
+    def remove_user(self, user_id: int) -> bool:
+        """
+        Remove a user from allowed DM list.
+
+        Args:
+            user_id: Discord user ID to remove
+
+        Returns:
+            bool: True if user was removed, False if didn't exist
+        """
+        with self._lock:
+            users = self._cache.get("allowed_users", [])
+            if user_id in users:
+                users.remove(user_id)
+                self._cache["allowed_users"] = users
                 self._save()
                 return True
             return False
