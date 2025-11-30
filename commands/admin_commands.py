@@ -416,8 +416,30 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
         interaction: discord.Interaction, current: str
     ) -> list[discord.app_commands.Choice[str]]:
         """Autocomplete for timezone selection"""
+        # Popular timezones to show when no input
+        popular = [
+            "UTC",
+            "America/New_York",
+            "America/Chicago",
+            "America/Denver",
+            "America/Los_Angeles",
+            "Europe/London",
+            "Europe/Paris",
+            "Europe/Berlin",
+            "Asia/Tokyo",
+            "Asia/Shanghai",
+            "Asia/Hong_Kong",
+            "Asia/Singapore",
+            "Asia/Taipei",
+            "Australia/Sydney",
+        ]
+
+        if not current:
+            # Show popular timezones when no input
+            return [discord.app_commands.Choice(name=tz, value=tz) for tz in popular]
+
+        # Filter all timezones based on current input
         timezones = sorted(available_timezones())
-        # Filter timezones based on current input
         filtered = [tz for tz in timezones if current.lower() in tz.lower()][:25]
         return [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
 
