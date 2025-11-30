@@ -355,20 +355,6 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
                 )
                 return
 
-            # Validate limit
-            if limit < 1:
-                await interaction.response.send_message(
-                    "❌ History limit must be at least 1.",
-                    ephemeral=True,
-                )
-                return
-
-            if limit > 100:
-                await interaction.response.send_message(
-                    "⚠️ History limit is very high. Consider using a lower value for better performance.",
-                    ephemeral=True,
-                )
-
             runtime_config.set_history_limit(limit)
             await interaction.response.send_message(
                 f"✅ History limit set to {limit} messages",
