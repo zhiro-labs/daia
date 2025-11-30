@@ -441,6 +441,11 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
         # Filter all timezones based on current input
         timezones = sorted(available_timezones())
         filtered = [tz for tz in timezones if current.lower() in tz.lower()][:25]
+
+        print(f"🔍 [timezone_autocomplete] Input: '{current}', Found: {len(filtered)} matches")
+        if filtered:
+            print(f"   First few results: {filtered[:3]}")
+
         return [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
 
     @bot.tree.command(
