@@ -435,8 +435,9 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
         name="settimezone",
         description="Set the bot's timezone for timestamps",
     )
+    @discord.app_commands.describe(timezone="The timezone to set (e.g., Asia/Tokyo)")
     @discord.app_commands.autocomplete(timezone=timezone_autocomplete)
-    @commands.has_permissions(administrator=True)
+    @discord.app_commands.checks.has_permissions(administrator=True)
     async def settimezone(interaction: discord.Interaction, timezone: str):
         """Slash command to set timezone"""
         try:
