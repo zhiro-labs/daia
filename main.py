@@ -29,7 +29,6 @@ load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 # Use runtime config for dynamic values (can be changed via Discord commands)
 DISCORD_BOT_ACTIVITY = runtime_config.discord_activity
-HISTORY_LIMIT = int(os.getenv("HISTORY_LIMIT"))
 
 CHAT_MODEL_API_KEY = os.getenv("CHAT_MODEL_API_KEY")
 CHAT_MODEL = os.getenv("CHAT_MODEL")
@@ -81,10 +80,12 @@ if not check_font_exists():
 async def create_message_flow():
     print("🏗️ [create_message_flow] Creating flow nodes...")
     # Create nodes
-    fetch_history = FetchDiscordHistory(bot, HISTORY_LIMIT)
+    fetch_history = FetchDiscordHistory(bot, runtime_config.history_limit)
     process_history = ProcessMessageHistory()
     contextual_system_prompt = ContextualSystemPrompt(
-        ENABLE_CONTEXTUAL_SYSTEM_PROMPT, genai_chat_system_prompt, HISTORY_LIMIT
+        ENABLE_CONTEXTUAL_SYSTEM_PROMPT,
+        genai_chat_system_prompt,
+        runtime_config.history_limit,
     )
     llm_chat = LLMChat(
         genai_client,
@@ -468,6 +469,49 @@ async def refreshmetadata(interaction: discord.Interaction):
             await interaction.response.send_message(
                 "Failed to refresh metadata.", ephemeral=True
             )
+
+
+@bot.tree.command(
+    name="sethistorylimit",
+    description="Set the number of messages to include in conversation history",
+)
+@commands.has_permissions(administrator=True)
+async def sethistorylimit(interaction: discord.Interaction, limit: int):
+    """Slash command to set history limit"""
+    try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
+        # Validate limit
+        if limit < 1:
+            await interaction.response.send_message(
+                "❌ History limit must be at least 1.",
+                ephemeral=True,
+            )
+            return
+
+        if limit > 100:
+            await interaction.response.send_message(
+                "⚠️ History limit is very high. Consider using a lower value for better performance.",
+                ephemeral=True,
+            )
+
+        runtime_config.set_history_limit(limit)
+        await interaction.response.send_message(
+            f"✅ History limit set to {limit} messages",
+            ephemeral=True,
+        )
+        print(f"✅ [sethistorylimit] History limit updated to {limit}")
+    except Exception as e:
+        print(f"❌ [sethistorylimit] Error setting history limit: {e}")
+        await interaction.response.send_message(
+            "Failed to set history limit.", ephemeral=True
+        )
 
 
 @bot.event

@@ -45,6 +45,7 @@ Control which users can DM the bot:
 ### Configuration Management (Administrator only)
 
 - `/refreshmetadata`: Refresh all channel and user names in the configuration file. Useful when channels or users have been renamed.
+- `/sethistorylimit <limit>`: Set the number of messages to include in conversation history. This controls how much context the bot remembers from previous messages.
 
 ## Automatic Features
 

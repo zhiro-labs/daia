@@ -29,6 +29,7 @@ class RuntimeConfig:
                 "user_metadata": {},
                 "timezone": "UTC",
                 "discord_activity": "Surfing",
+                "history_limit": 12,
             }
             self._save()
         else:
@@ -108,8 +109,11 @@ class RuntimeConfig:
 
         lines.append("# Discord bot activity status message\n")
         lines.append(
-            f"discord_activity: {self._cache.get('discord_activity', 'Surfing')}\n"
+            f"discord_activity: {self._cache.get('discord_activity', 'Surfing')}\n\n"
         )
+
+        lines.append("# Number of messages to include in conversation history\n")
+        lines.append(f"history_limit: {self._cache.get('history_limit', 12)}\n")
 
         with open(self.config_path, "w", encoding="utf-8") as f:
             f.writelines(lines)
@@ -133,6 +137,11 @@ class RuntimeConfig:
     def discord_activity(self) -> str:
         """Get Discord bot activity status."""
         return self._cache.get("discord_activity", "Surfing")
+
+    @property
+    def history_limit(self) -> int:
+        """Get history limit for message context."""
+        return self._cache.get("history_limit", 12)
 
     def add_channel(
         self, channel_id: int, server_name: str = None, channel_name: str = None
@@ -250,6 +259,12 @@ class RuntimeConfig:
         """Update Discord bot activity status."""
         with self._lock:
             self._cache["discord_activity"] = activity
+            self._save()
+
+    def set_history_limit(self, limit: int):
+        """Update history limit for message context."""
+        with self._lock:
+            self._cache["history_limit"] = limit
             self._save()
 
     def reload(self):
