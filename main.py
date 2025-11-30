@@ -153,6 +153,14 @@ async def newchat(interaction: discord.Interaction):
 async def addchannel(interaction: discord.Interaction):
     """Slash command to add current channel to allowed channels"""
     try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
         channel_id = interaction.channel.id
         was_added = runtime_config.add_channel(channel_id)
 
@@ -182,6 +190,14 @@ async def addchannel(interaction: discord.Interaction):
 async def removechannel(interaction: discord.Interaction):
     """Slash command to remove current channel from allowed channels"""
     try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
         channel_id = interaction.channel.id
         was_removed = runtime_config.remove_channel(channel_id)
 
@@ -205,12 +221,21 @@ async def removechannel(interaction: discord.Interaction):
 
 
 @bot.tree.command(
-    name="listchannels", description="List all channels where bot is allowed"
+    name="listchannels",
+    description="List all channels where bot is allowed in this server",
 )
 @commands.has_permissions(administrator=True)
 async def listchannels(interaction: discord.Interaction):
-    """Slash command to list all allowed channels"""
+    """Slash command to list all allowed channels in the current server"""
     try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
         allowed = runtime_config.allowed_channels
         if not allowed:
             await interaction.response.send_message(
@@ -218,17 +243,31 @@ async def listchannels(interaction: discord.Interaction):
                 ephemeral=True,
             )
         else:
+            # Filter channels to only show those from the current server
             channel_mentions = []
             for channel_id in allowed:
                 channel = bot.get_channel(channel_id)
-                if channel:
+                if (
+                    channel
+                    and channel.guild
+                    and channel.guild.id == interaction.guild.id
+                ):
                     channel_mentions.append(f"• {channel.mention} (ID: {channel_id})")
-                else:
-                    channel_mentions.append(f"• Unknown channel (ID: {channel_id})")
 
-            message = "**Allowed Channels:**\n" + "\n".join(channel_mentions)
-            await interaction.response.send_message(message, ephemeral=True)
-            print(f"✅ [listchannels] Listed {len(allowed)} allowed channels")
+            if not channel_mentions:
+                await interaction.response.send_message(
+                    f"ℹ️ No allowed channels in **{interaction.guild.name}**.",
+                    ephemeral=True,
+                )
+            else:
+                message = (
+                    f"**Allowed Channels in {interaction.guild.name}:**\n"
+                    + "\n".join(channel_mentions)
+                )
+                await interaction.response.send_message(message, ephemeral=True)
+                print(
+                    f"✅ [listchannels] Listed {len(channel_mentions)} allowed channels for guild {interaction.guild.id}"
+                )
     except Exception as e:
         print(f"❌ [listchannels] Error listing channels: {e}")
         await interaction.response.send_message(
@@ -241,6 +280,14 @@ async def listchannels(interaction: discord.Interaction):
 async def adduser(interaction: discord.Interaction, user: discord.User):
     """Slash command to add user to allowed DM users"""
     try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
         user_id = user.id
         was_added = runtime_config.add_user(user_id)
 
@@ -270,6 +317,14 @@ async def adduser(interaction: discord.Interaction, user: discord.User):
 async def removeuser(interaction: discord.Interaction, user: discord.User):
     """Slash command to remove user from allowed DM users"""
     try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
         user_id = user.id
         was_removed = runtime_config.remove_user(user_id)
 
@@ -301,6 +356,14 @@ async def removeuser(interaction: discord.Interaction, user: discord.User):
 async def listusers(interaction: discord.Interaction):
     """Slash command to list all allowed DM users"""
     try:
+        # Check if command is used in a server
+        if not interaction.guild:
+            await interaction.response.send_message(
+                "❌ This command can only be used in a server, not in DMs.",
+                ephemeral=True,
+            )
+            return
+
         allowed = runtime_config.allowed_users
         if not allowed:
             await interaction.response.send_message(
