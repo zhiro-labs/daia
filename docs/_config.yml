@@ -1,4 +1,4 @@
-title: "Daia: <br/>Discord AI Agent"
+title: "Daia"
 description: Discord AI Agent powered by Google Gemini and PocketFlow
 remote_theme: just-the-docs/just-the-docs
 
@@ -6,19 +6,10 @@ url: https://zhiro-labs.github.io
 baseurl: /daia
 
 markdown: kramdown
-kramdown:
-  input: GFM
-  syntax_highlighter: rouge
-  auto_ids: true
-  toc_levels: 1..3
 
 # Just the Docs settings
 search_enabled: true
 heading_anchors: true
-
-# Navigation
-nav_enabled: true
-nav_sort: case_insensitive
 
 # Footer
 footer_content: "Copyright &copy; 2025 Zhiro Labs. Distributed under the <a href=\"https://github.com/zhiro-labs/daia/blob/main/LICENSE\">MIT License</a>."
@@ -30,30 +21,12 @@ back_to_top_text: "Back to top"
 # Color scheme
 color_scheme: light
 
-# Callouts
-callouts:
-  note:
-    color: blue
-  warning:
-    color: yellow
-  important:
-    color: red
-
 # Plugins
 plugins:
   - jekyll-seo-tag
 
-# SEO and branding
-author: Zhiro Labs
-# logo: "/daia/assets/daia-logo.png"
-
-# Custom CSS and links
+# Custom links
 aux_links:
   "GitHub": "https://github.com/zhiro-labs/daia"
-  "Report Issue": "https://github.com/zhiro-labs/daia/issues"
 
 aux_links_new_tab: true
-
-# Custom head includes
-head_custom: |
-  <link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}"

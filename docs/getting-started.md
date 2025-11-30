@@ -5,279 +5,71 @@ nav_order: 2
 ---
 
 # Getting Started
-{: .no_toc }
-
-This guide will walk you through setting up Daia from scratch.
-
-## Table of Contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
-
----
 
 ## Prerequisites
 
-Before you begin, make sure you have:
+- A Discord Bot Token. You can follow the official guide to create one: [Discord Developer Documentation](https://discord.com/developers/docs/quick-start/getting-started#step-1-creating-an-app).
+- A Google Gemini API Key. You can obtain one from [Google AI Studio](https://aistudio.google.com/apikey).
 
-### 1. Discord Bot Token
+## Environment
 
-You'll need to create a Discord application and bot:
-
-1. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click "New Application" and give it a name
-3. Navigate to the "Bot" section in the left sidebar
-4. Click "Add Bot"
-5. Under the "Token" section, click "Reset Token" and copy it (you'll need this later)
-
-For detailed instructions, see the [Discord Developer Documentation](https://discord.com/developers/docs/quick-start/getting-started#step-1-creating-an-app).
-
-### 2. Google Gemini API Key
-
-Get your API key from [Google AI Studio](https://aistudio.google.com/apikey):
-
-1. Sign in with your Google account
-2. Click "Get API Key"
-3. Create a new API key or use an existing one
-4. Copy the key (you'll need this later)
-
-### 3. Python Environment
-
-This project requires **Python 3.12 or higher**. We use `uv` for dependency management, which will automatically handle the Python version requirement and create a virtual environment for you.
-
----
+This project requires Python 3.12+. `uv` will gracefully handle the Python version requirement, create a virtual environment, and manage all project dependencies for you.
 
 ## Installation
 
-### Step 1: Clone the Repository
+1. **Clone the repository:**
 
-```bash
-git clone https://github.com/zhiro-labs/daia.git
-cd daia
-```
+   ```bash
+   git clone https://github.com/zhiro-labs/daia.git
+   cd daia
+   ```
 
-### Step 2: Install uv (if needed)
+2. **Install dependencies:**
 
-If you don't have `uv` installed, follow the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+   ```bash
+   uv sync
+   ```
 
-Quick install options:
+   > ℹ️ **Note:**
+   > If you don't have `uv` installed, you can follow the official installation guide: [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
 
-```bash
-# macOS/Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
+3. **Configure your environment and system prompt:**
 
-# Windows
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+   - Copy the example files to create your own configuration:
+     ```bash
+     cp .env.example .env
+     cp config/chat_sys_prompt.txt.example config/chat_sys_prompt.txt
+     cp config/runtime.yml.example config/runtime.yml
+     ```
+   - Edit the `.env` file to add your Discord bot token and Gemini API key.
+   - Edit `config/chat_sys_prompt.txt` to customize the bot's personality and instructions.
+   - Edit `config/runtime.yml` to configure runtime settings and behavior.
 
-# With pip
-pip install uv
-```
+4. **Run the bot:**
+   ```bash
+   uv run main.py
+   ```
+   > ℹ️ **Note:**
+   > On first run, the bot will automatically download Noto CJK fonts (~100MB) for high-quality table image rendering. This may take a few minutes depending on your internet connection.
 
-### Step 3: Install Dependencies
+## Discord Application Permissions and Intents
 
-```bash
-uv sync
-```
+For the bot to function correctly, you need to configure its permissions and intents in the [Discord Developer Portal](https://discord.com/developers/).
 
-This command will:
-- Create a virtual environment
-- Install all required dependencies
-- Set up the project for development
+### Privileged Gateway Intents
 
----
+Navigate to your bot's settings in the Discord Developer Portal and enable the following privileged gateway intents:
 
-## Configuration
+- **Server Members Intent**: Required for the bot to recognize and address users by their display name.
+- **Message Content Intent**: Required for the bot to read message content.
 
-### Step 1: Create Configuration Files
+### Bot Permissions
 
-Copy the example files to create your own configuration:
+When inviting the bot to your server, ensure it has the following permissions:
 
-```bash
-cp .env.example .env
-cp config/chat_sys_prompt.txt.example config/chat_sys_prompt.txt
-cp config/runtime.yml.example config/runtime.yml
-```
-
-### Step 2: Edit Environment Variables
-
-Open the `.env` file in your favorite text editor and fill in the required values:
-
-```bash
-# Required
-DISCORD_BOT_TOKEN=your_discord_bot_token_here
-CHAT_MODEL_API_KEY=your_gemini_api_key_here
-CHAT_MODEL=gemini-1.5-flash
-CHAT_TEMPERATURE=1.0
-HISTORY_LIMIT=50
-CHAT_SYS_PROMPT_PATH=config/chat_sys_prompt.txt
-
-# Optional
-ENABLE_CONTEXTUAL_SYSTEM_PROMPT=on
-CHAT_MODEL_PROVIDER=gemini
-```
-
-See the [Configuration Reference](configuration-usage.html#configuration-files) for detailed explanations of each variable.
-
-### Step 3: Configure Runtime Settings
-
-Edit `config/runtime.yml` to configure runtime behavior:
-
-```yaml
-# List of channel IDs where the bot responds without mentions
-allowed_channels: []
-
-# Timezone for bot operations
-timezone: UTC
-
-# Discord bot activity status message
-discord_activity: Surfing
-```
-
-To find channel IDs:
-1. Enable Developer Mode in Discord (User Settings → Advanced → Developer Mode)
-2. Right-click a channel and select "Copy Channel ID"
-
-### Step 4: Customize System Prompt
-
-Edit `config/chat_sys_prompt.txt` to customize your bot's personality and behavior. This file contains the instructions that guide how Daia responds to users.
-
-Example:
-```
-You are Daia, a helpful and friendly AI assistant in a Discord server.
-You provide clear, concise answers and maintain a casual, approachable tone.
-When users ask questions, you provide accurate information and cite sources when possible.
-```
-
----
-
-## Discord Bot Setup
-
-### Step 1: Enable Privileged Gateway Intents
-
-In the [Discord Developer Portal](https://discord.com/developers/applications):
-
-1. Select your application
-2. Go to the "Bot" section
-3. Scroll down to "Privileged Gateway Intents"
-4. Enable the following:
-   - **Server Members Intent** (required for user recognition)
-   - **Message Content Intent** (required to read messages)
-5. Click "Save Changes"
-
-### Step 2: Configure Bot Permissions
-
-When inviting the bot to your server, ensure it has these permissions:
-
-**General Permissions:**
-- View Channels
-
-**Text Permissions:**
-- Send Messages
-- Attach Files
-- Read Message History
-
-### Step 3: Generate Invite Link
-
-1. In the Developer Portal, go to "OAuth2" → "URL Generator"
-2. Select scopes:
-   - `bot`
-   - `applications.commands`
-3. Select the permissions listed above
-4. Copy the generated URL and open it in your browser
-5. Select your server and authorize the bot
-
----
-
-## Running the Bot
-
-Start Daia with:
-
-```bash
-uv run main.py
-```
-
-On first run, the bot will automatically download Noto CJK fonts (~100MB) for table rendering. This may take a few minutes depending on your internet connection.
-
-You should see output similar to:
-
-```
-Logged in as Daia#1234
-Ready to chat!
-```
-
----
-
-## Verification
-
-To verify everything is working:
-
-1. Go to your Discord server
-2. Send a message mentioning the bot: `@Daia hello!`
-3. The bot should respond with a greeting
-
-If the bot doesn't respond, check the [Troubleshooting](#troubleshooting) section below.
-
----
-
-## Troubleshooting
-
-### Bot doesn't respond
-
-**Check intents:**
-- Ensure "Message Content Intent" is enabled in the Developer Portal
-- Restart the bot after enabling intents
-
-**Check permissions:**
-- Verify the bot has "View Channels" and "Send Messages" permissions in the channel
-- Check the channel's permission overrides
-
-**Check configuration:**
-- Verify your `DISCORD_BOT_TOKEN` is correct
-- Check that the bot is online in your server's member list
-
-### API Key errors
-
-**Invalid Gemini API key:**
-- Verify your `CHAT_MODEL_API_KEY` is correct
-- Check that the API key is active in Google AI Studio
-- Ensure you haven't exceeded your API quota
-
-### Font download issues
-
-**Slow or failed font download:**
-- Check your internet connection
-- The fonts are downloaded from GitHub releases
-- If download fails, the bot will retry on next startup
-
-### Import or dependency errors
-
-**Module not found:**
-```bash
-# Reinstall dependencies
-uv sync --reinstall
-```
-
-**Python version issues:**
-- Ensure you have Python 3.12 or higher
-- `uv` should handle this automatically, but you can check with `python --version`
-
----
-
-## Next Steps
-
-Now that Daia is running, you can:
-
-- Learn about [Configuration & Usage](configuration-usage.html)
-- Explore [Development](development.html) if you want to contribute
-- Check out the [Project Structure](project-structure.html) to understand the codebase
-
----
-
-## Getting Help
-
-If you encounter issues not covered here:
-
-- Check the [GitHub Issues](https://github.com/zhiro-labs/daia/issues)
-- Start a [Discussion](https://github.com/zhiro-labs/daia/discussions)
-- Review the [Discord Developer Documentation](https://discord.com/developers/docs)
+- **General Permissions**
+  - View Channels
+- **Text Permissions**
+  - Send Messages
+  - Attach Files
+  - Read Message History
