@@ -467,7 +467,9 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
                     discord.app_commands.Choice(name=tz, value=tz)
                     for tz in TIMEZONES[:25]
                 ]
-                print(f"🔍 [timezone_autocomplete] Returning {len(results)} default results")
+                print(
+                    f"🔍 [timezone_autocomplete] Returning {len(results)} default results"
+                )
                 return results
 
             # Fast search using pre-computed lowercase list
@@ -475,8 +477,12 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
             filtered = [tz for tz_lower, tz in TIMEZONES_LOWER if query in tz_lower][
                 :25
             ]
-            results = [discord.app_commands.Choice(name=tz, value=tz) for tz in filtered]
-            print(f"🔍 [timezone_autocomplete] Query '{current}' returned {len(results)} results")
+            results = [
+                discord.app_commands.Choice(name=tz, value=tz) for tz in filtered
+            ]
+            print(
+                f"🔍 [timezone_autocomplete] Query '{current}' returned {len(results)} results"
+            )
             return results
         except Exception as e:
             print(f"❌ [timezone_autocomplete] Error: {e}")
