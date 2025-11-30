@@ -414,7 +414,7 @@ def setup_admin_commands(bot: commands.Bot, runtime_config):
             )
 
             await interaction.response.send_message(
-                f"✅ Bot activity updated to: {activity}",
+                f"✅ Bot activity updated to: {activity}\n(Will persist after bot restart)",
                 ephemeral=True,
             )
             print(f"✅ [setactivity] Activity updated to: {activity}")
