@@ -1,8 +1,9 @@
 """Admin-related Discord slash commands"""
 
+from zoneinfo import available_timezones
+
 import discord
 from discord.ext import commands
-from zoneinfo import available_timezones
 
 
 def setup_admin_commands(bot: commands.Bot, runtime_config):
