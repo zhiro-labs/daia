@@ -79,18 +79,29 @@ async def _call_gemini(prompt: str, config: LLMConfig, history: list = None) -> 
     return response.text
 
 
+def _sync_any_llm_completion(completion_kwargs: dict, api_key: str | None, sub_provider: str):
+    """Synchronous wrapper for any-llm completion (runs in executor)"""
+    import os
+
+    from any_llm import completion
+
+    # Set env var in the executor thread before calling completion
+    if api_key:
+        env_var_name = f"{sub_provider.upper()}_API_KEY"
+        os.environ[env_var_name] = api_key
+
+    return completion(**completion_kwargs)
+
+
 async def _call_any_llm(prompt: str, config: LLMConfig, history: list = None) -> str:
     """Call LLM via any-llm library (OpenAI-compatible interface)"""
     import asyncio
     import os
 
-    from any_llm import completion
-
     if not config.sub_provider:
         raise ValueError("any-llm requires a sub-provider (e.g., 'any-llm-openai')")
 
-    # Dynamically set the provider's env var if api_key is provided
-    # any-llm checks for env vars during provider initialization
+    # Set env var in main thread as well (belt and suspenders)
     if config.api_key:
         env_var_name = f"{config.sub_provider.upper()}_API_KEY"
         os.environ[env_var_name] = config.api_key
@@ -136,7 +147,7 @@ async def _call_any_llm(prompt: str, config: LLMConfig, history: list = None) ->
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(
         None,
-        lambda: completion(**completion_kwargs),
+        lambda: _sync_any_llm_completion(completion_kwargs, config.api_key, config.sub_provider),
     )
 
     return response.choices[0].message.content
