@@ -40,6 +40,7 @@ class LLMChat(AsyncNode):
                 provider=self.config.provider,
                 system_prompt=prep_res["enhanced_system_prompt"],
                 tools=self.config.tools,
+                api_key=self.config.api_key,
             )
 
         print(f"📤 [LLMChat] Sending message to {config.provider.upper()} LLM...")
