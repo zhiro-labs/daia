@@ -280,10 +280,10 @@ Contributions are welcome! Please submit pull requests to the `dev` branch. Feel
 
 ### Extensibility
 
-- [ ] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm) support
+- [x] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm) support
 - [ ] MCP support
 - ~~[ ] OpenAI support~~
-- [ ] OpenAI compatible support
+- ~~[ ] OpenAI compatible support~~
 - [ ] Database support
 - [ ] Long-term memory
 - [ ] Dive deeper cookbook/pocketflow-thinking on [PocketFlow](https://github.com/The-Pocket/PocketFlow)
