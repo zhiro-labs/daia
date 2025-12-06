@@ -28,43 +28,57 @@ def init_llm_configs(
 ) -> None:
     """Initialize all LLM configurations from environment variables.
 
+    Fallback logic:
+    - Chat: uses env vars or defaults
+    - Router/Thinker: uses own env vars → falls back to chat config
+
     Args:
         chat_system_prompt: System prompt for chat model
         chat_tools: Tools for chat model (e.g., Google Search)
     """
     global _chat_config, _router_config, _thinker_config
 
-    # Chat model config
+    # Default values for chat model
+    default_model = "gemini-2.5-flash"
+    default_provider = "gemini"
+    default_temperature = 1.0
+
+    # Chat model config (always created with defaults if no API key)
     chat_api_key = os.getenv("CHAT_MODEL_API_KEY")
-    if chat_api_key:
+    chat_client = _create_client(chat_api_key)
+    chat_model = os.getenv("CHAT_MODEL", default_model)
+    chat_provider = os.getenv("CHAT_MODEL_PROVIDER", default_provider)
+    chat_temperature = float(os.getenv("CHAT_TEMPERATURE", default_temperature))
+
+    if chat_client:
         _chat_config = LLMConfig(
-            client=_create_client(chat_api_key),
-            model=os.getenv("CHAT_MODEL", "gemini-2.5-flash"),
-            temperature=float(os.getenv("CHAT_TEMPERATURE", 1.0)),
-            provider=os.getenv("CHAT_MODEL_PROVIDER", "gemini"),
+            client=chat_client,
+            model=chat_model,
+            temperature=chat_temperature,
+            provider=chat_provider,
             system_prompt=chat_system_prompt,
             tools=chat_tools or [],
         )
 
-    # Router model config (low temperature for deterministic routing)
+    # Router model config - falls back to chat config
     router_api_key = os.getenv("ROUTER_MODEL_API_KEY")
-    if router_api_key:
-        _router_config = LLMConfig(
-            client=_create_client(router_api_key),
-            model=os.getenv("ROUTER_MODEL", "gemini-2.0-flash"),
-            temperature=0.0,
-            provider=os.getenv("ROUTER_MODEL_PROVIDER", "gemini"),
-        )
+    router_client = _create_client(router_api_key) if router_api_key else chat_client
+    _router_config = LLMConfig(
+        client=router_client,
+        model=os.getenv("ROUTER_MODEL") or chat_model,
+        temperature=0.0,  # Router always uses low temperature
+        provider=os.getenv("ROUTER_MODEL_PROVIDER") or chat_provider,
+    ) if router_client else None
 
-    # Thinker model config
+    # Thinker model config - falls back to chat config
     thinker_api_key = os.getenv("THINKER_MODEL_API_KEY")
-    if thinker_api_key:
-        _thinker_config = LLMConfig(
-            client=_create_client(thinker_api_key),
-            model=os.getenv("THINKER_MODEL", "gemini-2.5-pro"),
-            temperature=float(os.getenv("THINKER_TEMPERATURE", 0.7)),
-            provider=os.getenv("THINKER_MODEL_PROVIDER", "gemini"),
-        )
+    thinker_client = _create_client(thinker_api_key) if thinker_api_key else chat_client
+    _thinker_config = LLMConfig(
+        client=thinker_client,
+        model=os.getenv("THINKER_MODEL") or chat_model,
+        temperature=float(os.getenv("THINKER_TEMPERATURE", 0.7)),
+        provider=os.getenv("THINKER_MODEL_PROVIDER") or chat_provider,
+    ) if thinker_client else None
 
 
 def get_chat_config() -> LLMConfig | None:
