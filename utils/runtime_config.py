@@ -88,9 +88,11 @@ class RuntimeConfig:
             lines.append("  {}\n")
         else:
             for channel_id, meta in channel_metadata.items():
+                server = meta.get('server', 'Unknown').replace('"', '\\"')
+                channel = meta.get('channel', 'Unknown').replace('"', '\\"')
                 lines.append(f"  '{channel_id}':\n")
-                lines.append(f"    server: {meta.get('server', 'Unknown')}\n")
-                lines.append(f"    channel: {meta.get('channel', 'Unknown')}\n")
+                lines.append(f'    server: "{server}"\n')
+                lines.append(f'    channel: "{channel}"\n')
 
         lines.append("\n")
         lines.append("user_metadata:\n")
@@ -98,8 +100,9 @@ class RuntimeConfig:
             lines.append("  {}\n")
         else:
             for user_id, meta in user_metadata.items():
+                username = meta.get('username', 'Unknown').replace('"', '\\"')
                 lines.append(f"  '{user_id}':\n")
-                lines.append(f"    username: {meta.get('username', 'Unknown')}\n")
+                lines.append(f'    username: "{username}"\n')
 
         lines.append("\n")
 
@@ -108,9 +111,8 @@ class RuntimeConfig:
         lines.append(f"timezone: {self._cache.get('timezone', 'UTC')}\n\n")
 
         lines.append("# Discord bot activity status message\n")
-        lines.append(
-            f"discord_activity: {self._cache.get('discord_activity', 'Surfing')}\n\n"
-        )
+        activity = self._cache.get('discord_activity', 'Surfing').replace('"', '\\"')
+        lines.append(f'discord_activity: "{activity}"\n\n')
 
         lines.append("# Number of messages to include in conversation history\n")
         lines.append(f"history_limit: {self._cache.get('history_limit', 12)}\n")
