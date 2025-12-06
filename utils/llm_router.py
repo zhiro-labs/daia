@@ -9,6 +9,27 @@ from typing import Any
 from google.genai import types
 
 
+ANY_LLM_PREFIX = "any-llm-"
+
+
+def parse_provider(provider: str) -> tuple[str, str | None]:
+    """Parse provider string to extract base provider and sub-provider.
+
+    Args:
+        provider: Provider string (e.g., "gemini", "any-llm-openai")
+
+    Returns:
+        Tuple of (base_provider, sub_provider)
+        - "gemini" → ("gemini", None)
+        - "any-llm-openai" → ("any-llm", "openai")
+        - "any-llm-anthropic" → ("any-llm", "anthropic")
+    """
+    if provider.startswith(ANY_LLM_PREFIX):
+        sub_provider = provider[len(ANY_LLM_PREFIX) :]
+        return ("any-llm", sub_provider if sub_provider else None)
+    return (provider, None)
+
+
 @dataclass
 class LLMConfig:
     """Configuration for an LLM instance"""
@@ -19,6 +40,23 @@ class LLMConfig:
     provider: str = "gemini"
     system_prompt: str = ""
     tools: list = field(default_factory=list)
+
+    @property
+    def base_provider(self) -> str:
+        """Get base provider (e.g., 'gemini' or 'any-llm')"""
+        base, _ = parse_provider(self.provider)
+        return base
+
+    @property
+    def sub_provider(self) -> str | None:
+        """Get sub-provider for any-llm (e.g., 'openai', 'anthropic')"""
+        _, sub = parse_provider(self.provider)
+        return sub
+
+    @property
+    def is_any_llm(self) -> bool:
+        """Check if using any-llm provider"""
+        return self.provider.startswith(ANY_LLM_PREFIX)
 
 
 async def _call_gemini(prompt: str, config: LLMConfig, history: list = None) -> str:
@@ -61,13 +99,15 @@ async def call_llm(
     Returns:
         Response from the LLM
     """
-    if config.provider not in PROVIDERS:
+    base_provider = config.base_provider
+
+    if base_provider not in PROVIDERS:
         raise ValueError(
             f"Unsupported provider: {config.provider}. "
             f"Supported providers: {list(PROVIDERS.keys())}"
         )
 
-    return await PROVIDERS[config.provider](prompt, config, history)
+    return await PROVIDERS[base_provider](prompt, config, history)
 
 
 def get_supported_providers() -> list[str]:
