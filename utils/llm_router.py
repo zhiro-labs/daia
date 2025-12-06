@@ -40,6 +40,7 @@ class LLMConfig:
     provider: str = "gemini"
     system_prompt: str = ""
     tools: list = field(default_factory=list)
+    api_key: str | None = None  # Used by any-llm provider
 
     @property
     def base_provider(self) -> str:
@@ -78,9 +79,66 @@ async def _call_gemini(prompt: str, config: LLMConfig, history: list = None) -> 
     return response.text
 
 
+async def _call_any_llm(prompt: str, config: LLMConfig, history: list = None) -> str:
+    """Call LLM via any-llm library (OpenAI-compatible interface)"""
+    import asyncio
+
+    from any_llm import completion
+
+    if not config.sub_provider:
+        raise ValueError("any-llm requires a sub-provider (e.g., 'any-llm-openai')")
+
+    # Build messages list in OpenAI format
+    messages = []
+
+    # Add system prompt if present
+    if config.system_prompt:
+        messages.append({"role": "system", "content": config.system_prompt})
+
+    # Convert history to OpenAI format
+    # History format varies by source, handle common cases
+    if history:
+        for msg in history:
+            if isinstance(msg, dict):
+                # Already in OpenAI format
+                messages.append(msg)
+            elif hasattr(msg, "role") and hasattr(msg, "parts"):
+                # Gemini format: Content(role='user', parts=[Part(text='...')])
+                role = "assistant" if msg.role == "model" else msg.role
+                content = "".join(
+                    part.text for part in msg.parts if hasattr(part, "text")
+                )
+                messages.append({"role": role, "content": content})
+
+    # Add current prompt as user message
+    messages.append({"role": "user", "content": prompt})
+
+    # Build completion kwargs
+    completion_kwargs = {
+        "model": config.model,
+        "provider": config.sub_provider,
+        "messages": messages,
+        "temperature": config.temperature,
+    }
+
+    # Add api_key if provided
+    if config.api_key:
+        completion_kwargs["api_key"] = config.api_key
+
+    # Call any-llm (sync function, run in executor)
+    loop = asyncio.get_event_loop()
+    response = await loop.run_in_executor(
+        None,
+        lambda: completion(**completion_kwargs),
+    )
+
+    return response.choices[0].message.content
+
+
 # Provider function mapping
 PROVIDERS = {
     "gemini": _call_gemini,
+    "any-llm": _call_any_llm,
 }
 
 

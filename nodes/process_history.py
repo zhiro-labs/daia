@@ -1,5 +1,6 @@
 """
 Message history processing node for the async flow pipeline.
+Supports both Gemini and OpenAI message formats.
 """
 
 import re
@@ -7,16 +8,23 @@ import re
 from google.genai import types
 from pocketflow import AsyncNode
 
+from services import get_chat_config
+
 
 class ProcessMessageHistory(AsyncNode):
     async def prep_async(self, shared):
         print(
             f"🔧 [ProcessMessageHistory] Preparing to process {len(shared['message_history'])} messages"
         )
+        # Determine output format based on chat provider
+        chat_config = get_chat_config()
+        use_gemini_format = chat_config and chat_config.base_provider == "gemini"
+
         return {
             "message_history": shared["message_history"],
             "bot_user_id": shared.get("bot_user_id"),
             "table_content_map": shared.get("table_content_map", {}),
+            "use_gemini_format": use_gemini_format,
         }
 
     def _replace_table_placeholders(self, content, table_map):
@@ -146,29 +154,20 @@ class ProcessMessageHistory(AsyncNode):
                         f"  ✅ [ProcessMessageHistory] Content updated for role {msg['role']}"
                     )
 
-        # Convert to Google AI API format
-        formatted_history = []
-        print(
-            f"🔄 [ProcessMessageHistory] Converting {len(normalized_history)} normalized messages to API format"
-        )
-        for i, msg in enumerate(normalized_history):
-            print(
-                f"  🔗 [ProcessMessageHistory] API Message {i + 1}: {msg['role']} - {msg['content'][:50]}..."
-            )
-            formatted_history.append(
-                types.Content(role=msg["role"], parts=[types.Part(text=msg["content"])])
-            )
-
-        # Ensure first message is from user
+        # Ensure first message is from user (remove leading model messages)
         removed_count = 0
-        while formatted_history and formatted_history[0].role == "model":
-            formatted_history.pop(0)
+        while normalized_history and normalized_history[0]["role"] == "model":
+            normalized_history.pop(0)
             removed_count += 1
 
         if removed_count > 0:
             print(
                 f"🗑️ [ProcessMessageHistory] Removed {removed_count} leading model messages"
             )
+
+        # Convert to provider-specific format
+        use_gemini_format = prep_res.get("use_gemini_format", True)
+        formatted_history = self._format_history(normalized_history, use_gemini_format)
 
         print(
             f"✅ [ProcessMessageHistory] Final formatted history has {len(formatted_history)} messages"
@@ -178,6 +177,52 @@ class ProcessMessageHistory(AsyncNode):
         )
         print(f"formatted_history:  \n{formatted_history}")
         return {"formatted_history": formatted_history, "unique_users": unique_users}
+
+    def _format_history(
+        self, normalized_history: list[dict], use_gemini_format: bool
+    ) -> list:
+        """Convert normalized history to provider-specific format.
+
+        Args:
+            normalized_history: List of {"role": "user"|"model", "content": str}
+            use_gemini_format: True for Gemini, False for OpenAI
+
+        Returns:
+            Formatted history for the target provider
+        """
+        if use_gemini_format:
+            return self._to_gemini_format(normalized_history)
+        return self._to_openai_format(normalized_history)
+
+    def _to_gemini_format(self, normalized_history: list[dict]) -> list:
+        """Convert to Google Gemini API format."""
+        print(
+            f"🔄 [ProcessMessageHistory] Converting {len(normalized_history)} messages to Gemini format"
+        )
+        formatted = []
+        for i, msg in enumerate(normalized_history):
+            print(
+                f"  🔗 [ProcessMessageHistory] Gemini Message {i + 1}: {msg['role']} - {msg['content'][:50]}..."
+            )
+            formatted.append(
+                types.Content(role=msg["role"], parts=[types.Part(text=msg["content"])])
+            )
+        return formatted
+
+    def _to_openai_format(self, normalized_history: list[dict]) -> list[dict]:
+        """Convert to OpenAI API format."""
+        print(
+            f"🔄 [ProcessMessageHistory] Converting {len(normalized_history)} messages to OpenAI format"
+        )
+        formatted = []
+        for i, msg in enumerate(normalized_history):
+            # OpenAI uses "assistant" instead of "model"
+            role = "assistant" if msg["role"] == "model" else msg["role"]
+            print(
+                f"  🔗 [ProcessMessageHistory] OpenAI Message {i + 1}: {role} - {msg['content'][:50]}..."
+            )
+            formatted.append({"role": role, "content": msg["content"]})
+        return formatted
 
     async def post_async(self, shared, prep_res, exec_res):
         shared["formatted_history"] = exec_res["formatted_history"]

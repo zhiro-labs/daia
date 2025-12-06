@@ -5,6 +5,7 @@ description = "Discord AI Agent"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "any-llm-sdk[all]>=1.4.0",
     "discord-py>=2.6.0",
     "google-genai>=1.31.0",
     "pillow>=11.3.0",
