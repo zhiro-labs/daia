@@ -82,11 +82,18 @@ async def _call_gemini(prompt: str, config: LLMConfig, history: list = None) -> 
 async def _call_any_llm(prompt: str, config: LLMConfig, history: list = None) -> str:
     """Call LLM via any-llm library (OpenAI-compatible interface)"""
     import asyncio
+    import os
 
     from any_llm import completion
 
     if not config.sub_provider:
         raise ValueError("any-llm requires a sub-provider (e.g., 'any-llm-openai')")
+
+    # Dynamically set the provider's env var if api_key is provided
+    # any-llm checks for env vars during provider initialization
+    if config.api_key:
+        env_var_name = f"{config.sub_provider.upper()}_API_KEY"
+        os.environ[env_var_name] = config.api_key
 
     # Build messages list in OpenAI format
     messages = []
