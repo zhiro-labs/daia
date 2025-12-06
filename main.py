@@ -211,6 +211,7 @@ def main():
         print(f"🤖 Chat model: {chat_config.model}")
         print(f"🌡️ Chat temperature: {chat_config.temperature}")
         print(f"🔌 LLM Provider: {chat_config.provider}")
+        print(f"🔐 API key present: {'✅' if chat_config.api_key else '❌ MISSING'}")
     print(f"📄 Chat system prompt path: {CHAT_SYS_PROMPT_PATH}")
     print(f"🔌 Contextual system prompt: {ENABLE_CONTEXTUAL_SYSTEM_PROMPT}")
     print("🔌 Starting Discord bot...")
