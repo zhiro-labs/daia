@@ -101,10 +101,17 @@ async def _call_any_llm(prompt: str, config: LLMConfig, history: list = None) ->
     if not config.sub_provider:
         raise ValueError("any-llm requires a sub-provider (e.g., 'any-llm-openai')")
 
-    # Set env var in main thread as well (belt and suspenders)
-    if config.api_key:
+    # Check if API key is available
+    if not config.api_key:
         env_var_name = f"{config.sub_provider.upper()}_API_KEY"
-        os.environ[env_var_name] = config.api_key
+        raise ValueError(
+            f"No API key provided for {config.sub_provider}. "
+            f"Set CHAT_MODEL_API_KEY in .env or {env_var_name} environment variable."
+        )
+
+    # Set env var in main thread before any any-llm imports/calls
+    env_var_name = f"{config.sub_provider.upper()}_API_KEY"
+    os.environ[env_var_name] = config.api_key
 
     # Build messages list in OpenAI format
     messages = []
