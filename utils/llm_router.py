@@ -120,20 +120,9 @@ async def _call_any_llm(prompt: str, config: LLMConfig, history: list = None) ->
     if config.system_prompt:
         messages.append({"role": "system", "content": config.system_prompt})
 
-    # Convert history to OpenAI format
-    # History format varies by source, handle common cases
+    # Add history (already in OpenAI format from ProcessMessageHistory)
     if history:
-        for msg in history:
-            if isinstance(msg, dict):
-                # Already in OpenAI format
-                messages.append(msg)
-            elif hasattr(msg, "role") and hasattr(msg, "parts"):
-                # Gemini format: Content(role='user', parts=[Part(text='...')])
-                role = "assistant" if msg.role == "model" else msg.role
-                content = "".join(
-                    part.text for part in msg.parts if hasattr(part, "text")
-                )
-                messages.append({"role": role, "content": content})
+        messages.extend(history)
 
     # Add current prompt as user message
     messages.append({"role": "user", "content": prompt})
