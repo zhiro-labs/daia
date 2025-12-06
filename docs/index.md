@@ -13,11 +13,11 @@ nav_order: 1
 [![CI](https://github.com/zhiro-labs/daia/actions/workflows/ci.yml/badge.svg)](https://github.com/zhiro-labs/daia/actions/workflows/ci.yml)
 [![Tests](https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml/badge.svg)](https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml)
 
-Daia (Discord AI Agent) is an intelligent Discord bot optimized for Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
+Daia (Discord AI Agent) is an intelligent Discord bot built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It supports Google Gemini and 20+ LLM providers via [any-llm](https://github.com/mozilla-ai/any-llm) (OpenAI, Anthropic, xAI, Mistral, and more). It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
 
 ## Features
 
-- **AI-Powered Conversations**: Leverages Google Gemini for natural language understanding and generation.
+- **Multi-Provider Support**: Works with Google Gemini and 20+ LLM providers via [any-llm](https://github.com/mozilla-ai/any-llm) (OpenAI, Anthropic, xAI, Mistral, etc.).
 - **User Recognition**: Recognizes and addresses users by their display name for a personalized experience.
 - **Smart Message Processing**: Processes Discord message history with context awareness.
 - **Markdown Table Rendering**: Automatically converts markdown tables to images using Noto Sans CJK fonts. Supported languages include but are not limited to English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Japanese (日本語), and Korean (한국어).

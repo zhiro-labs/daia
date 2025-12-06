@@ -1,5 +1,5 @@
 title: "Daia"
-description: Discord AI Agent powered by Google Gemini and PocketFlow
+description: Discord AI Agent supporting 20+ LLM providers via any-llm, built on PocketFlow
 remote_theme: just-the-docs/just-the-docs
 
 url: https://zhiro-labs.github.io

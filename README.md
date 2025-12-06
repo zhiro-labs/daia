@@ -9,11 +9,11 @@
     <a href="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml"><img src="https://github.com/zhiro-labs/daia/actions/workflows/test-matrix.yml/badge.svg" alt="Cross-Platform Tests"></a>
 </p>
 
-Daia (Discord AI Agent) is an intelligent Discord bot optimized for Google Gemini and built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
+Daia (Discord AI Agent) is an intelligent Discord bot built on the [PocketFlow](https://github.com/The-Pocket/PocketFlow) framework. It supports Google Gemini and 20+ LLM providers via [any-llm](https://github.com/mozilla-ai/any-llm) (OpenAI, Anthropic, xAI, Mistral, and more). It provides conversational AI capabilities with advanced features like markdown table rendering, message history processing, and Google Search integration.
 
 ## Features
 
-- **AI-Powered Conversations**: Leverages Google Gemini for natural language understanding and generation.
+- **Multi-Provider Support**: Works with Google Gemini and 20+ LLM providers via [any-llm](https://github.com/mozilla-ai/any-llm) (OpenAI, Anthropic, xAI, Mistral, etc.).
 - **User Recognition**: Recognizes and addresses users by their display name for a personalized experience.
 - **Smart Message Processing**: Processes Discord message history with context awareness.
 - **Markdown Table Rendering**: Automatically converts markdown tables to images using Noto Sans CJK fonts. Supported languages include but are not limited to English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Japanese (日本語), and Korean (한국어).
@@ -29,7 +29,11 @@ Daia (Discord AI Agent) is an intelligent Discord bot optimized for Google Gemin
 ### Prerequisites
 
 - A Discord Bot Token. You can follow the official guide to create one: [Discord Developer Documentation](https://discord.com/developers/docs/quick-start/getting-started#step-1-creating-an-app).
-- A Google Gemini API Key. You can obtain one from [Google AI Studio](https://aistudio.google.com/apikey).
+- An API key for your chosen LLM provider:
+  - Google Gemini: [Google AI Studio](https://aistudio.google.com/apikey)
+  - OpenAI: [OpenAI Platform](https://platform.openai.com/api-keys)
+  - Anthropic: [Anthropic Console](https://console.anthropic.com/)
+  - Other providers: See [any-llm supported providers](https://mozilla-ai.github.io/any-llm/providers/)
 
 ### Environment
 
@@ -103,12 +107,12 @@ Daia uses two configuration files:
 These are set in a `.env` file in the project root:
 
 - `DISCORD_BOT_TOKEN`: Your Discord bot token. **(Required)**
-- `CHAT_MODEL_API_KEY`: Your Google Gemini API key. **(Required)**
-- `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro"). **(Required)**
-- `CHAT_TEMPERATURE`: Controls the randomness of Gemini's responses (range: 0.0–2.0). **(Required)**
+- `CHAT_MODEL_PROVIDER`: The LLM provider to use. Supports `gemini` (default) or `any-llm-{provider}` for other providers via [any-llm](https://github.com/mozilla-ai/any-llm). Examples: `any-llm-openai`, `any-llm-anthropic`, `any-llm-xai`. See [supported providers](https://mozilla-ai.github.io/any-llm/providers/).
+- `CHAT_MODEL_API_KEY`: Your API key for the selected provider. **(Required)**
+- `CHAT_MODEL`: The model to use (e.g., "gemini-2.5-flash", "gpt-4o-mini", "claude-3-5-sonnet-latest"). **(Required)**
+- `CHAT_TEMPERATURE`: Controls the randomness of responses (range: 0.0–2.0). **(Required)**
 - `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file. **(Required)**
 - `ENABLE_CONTEXTUAL_SYSTEM_PROMPT`: Set to `on` to enable the contextual system prompt, which allows the bot to recognize and address users by their display name. The recommended setting is `on` (as set in `.env.example`). If the variable is not set, it defaults to `off`.
-- `CHAT_MODEL_PROVIDER`: The LLM provider to use. Currently supports `gemini`. Defaults to `gemini`.
 
 ### Runtime Configuration (`config/runtime.yml`)
 
@@ -280,10 +284,10 @@ Contributions are welcome! Please submit pull requests to the `dev` branch. Feel
 
 ### Extensibility
 
-- [x] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm) support
+- [x] Mozilla [any-llm](https://github.com/mozilla-ai/any-llm) support (OpenAI, Anthropic, xAI, Mistral, and 20+ providers)
 - [ ] MCP support
-- ~~[ ] OpenAI support~~
-- ~~[ ] OpenAI compatible support~~
+- ~~[ ] OpenAI support~~ (covered by any-llm)
+- ~~[ ] OpenAI compatible support~~ (covered by any-llm)
 - [ ] Database support
 - [ ] Long-term memory
 - [ ] Dive deeper cookbook/pocketflow-thinking on [PocketFlow](https://github.com/The-Pocket/PocketFlow)

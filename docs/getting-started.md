@@ -9,7 +9,11 @@ nav_order: 2
 ## Prerequisites
 
 - A Discord Bot Token. You can follow the official guide to create one: [Discord Developer Documentation](https://discord.com/developers/docs/quick-start/getting-started#step-1-creating-an-app).
-- A Google Gemini API Key. You can obtain one from [Google AI Studio](https://aistudio.google.com/apikey).
+- An API key for your chosen LLM provider:
+  - Google Gemini: [Google AI Studio](https://aistudio.google.com/apikey)
+  - OpenAI: [OpenAI Platform](https://platform.openai.com/api-keys)
+  - Anthropic: [Anthropic Console](https://console.anthropic.com/)
+  - Other providers: See [any-llm supported providers](https://mozilla-ai.github.io/any-llm/providers/)
 
 ## Environment
 

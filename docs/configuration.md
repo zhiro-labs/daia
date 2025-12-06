@@ -13,12 +13,12 @@ Daia uses two configuration files:
 These are set in a `.env` file in the project root:
 
 - `DISCORD_BOT_TOKEN`: Your Discord bot token. **(Required)**
-- `CHAT_MODEL_API_KEY`: Your Google Gemini API key. **(Required)**
-- `CHAT_MODEL`: The Gemini model to use (e.g., "gemini-1.5-flash", "gemini-1.5-pro"). **(Required)**
-- `CHAT_TEMPERATURE`: Controls the randomness of Gemini's responses (range: 0.0–2.0). **(Required)**
+- `CHAT_MODEL_PROVIDER`: The LLM provider to use. Supports `gemini` (default) or `any-llm-{provider}` for other providers via [any-llm](https://github.com/mozilla-ai/any-llm). Examples: `any-llm-openai`, `any-llm-anthropic`, `any-llm-xai`. See [supported providers](https://mozilla-ai.github.io/any-llm/providers/).
+- `CHAT_MODEL_API_KEY`: Your API key for the selected provider. **(Required)**
+- `CHAT_MODEL`: The model to use (e.g., "gemini-2.5-flash", "gpt-4o-mini", "claude-3-5-sonnet-latest"). **(Required)**
+- `CHAT_TEMPERATURE`: Controls the randomness of responses (range: 0.0–2.0). **(Required)**
 - `CHAT_SYS_PROMPT_PATH`: The path to the system prompt file. **(Required)**
 - `ENABLE_CONTEXTUAL_SYSTEM_PROMPT`: Set to `on` to enable the contextual system prompt, which allows the bot to recognize and address users by their display name. The recommended setting is `on` (as set in `.env.example`). If the variable is not set, it defaults to `off`.
-- `CHAT_MODEL_PROVIDER`: The LLM provider to use. Currently supports `gemini`. Defaults to `gemini`.
 
 ## Runtime Configuration (`config/runtime.yml`)
 
