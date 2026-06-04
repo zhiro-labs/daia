@@ -1,3 +1,5 @@
+> ⚠️ **Moved:** This project is now maintained at [Dango](https://github.com/zhiro-labs/dango).
+
 <p align="center">
   <img src="assets/readme/cover.png" alt="Daia: Discord AI Agent" width="800">
 </p>
